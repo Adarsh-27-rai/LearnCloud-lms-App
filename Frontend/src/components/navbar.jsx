@@ -8,7 +8,7 @@ function Navbar() {
           {/* <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold">L</div> */}
           <img src="src/assets/Screenshot 2026-01-16 112749.png" alt="logo" className='h-10 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.1)]'/>
           <div className="text-xl font-bold tracking-tight text-gray-900">
-            Learn<span className="text-indigo-600">Sphere</span>
+            Learn<span className="text-indigo-600">Cloud</span>
           </div>
         </div>
 
