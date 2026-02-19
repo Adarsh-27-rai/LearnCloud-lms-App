@@ -1,141 +1,65 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import API from "../api/axios";
+import TeachersSideBar from "../components/component3/layout/TeacherSideBar";
+import DashboardPage from "../components/component3/dashboard/Dashboard";
+import MyCoursesPage from "../components/component3/courses/MyCoursesPage";
+import AddCourseModal from "../components/component3/courses/AddCourseModal";
 
-function TeacherDashBoard() {
-  const [course, setCourse] = useState({});
-  const [courseName, setCourseName] = useState("");
-  const [courseDescription, setCourseDescription] = useState("");
+const INIT_COURSES = [
+  { id: 1, title: "Math 101",      description: "Fundamentals of algebra, geometry and calculus for beginners.", students: 28, lessons: 14, level: "Beginner",     subject: "Algebra",       palette: 0 },
+  { id: 2, title: "Physics 201",   description: "Mechanics, thermodynamics, and wave phenomena explored in depth.", students: 19, lessons: 10, level: "Intermediate", subject: "Mechanics",    palette: 1 },
+  { id: 3, title: "Chemistry 301", description: "Organic and inorganic chemistry with hands-on lab sessions.",      students: 22, lessons: 12, level: "Advanced",     subject: "Organic Chem", palette: 2 },
+  { id: 4, title: "Biology 101",   description: "Cell biology, genetics, and an overview of ecosystems.",           students: 15, lessons: 9,  level: "Beginner",     subject: "Genetics",     palette: 3 },
+];
 
-  async function addCourse() {
-    await API.post("/course", { title: courseName, description: courseDescription})
-  }
+// ------------------------------------------------------------------------------------------------------------
+
+export default function TeacherDashboard() {
+
+  const [active, setActive] = useState("dashboard");
+  const [modal, setModal] = useState(false);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50 p-6">
+    <div className="min-h-screen bg-sky-50 flex">
 
-      {/* Navbar */}
-      <nav className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Teacher Dashboard</h1>
-        <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-          Logout
-        </button>
-      </nav>
+      <TeachersSideBar active={active} setActive={setActive} />
 
-      {/* Welcome Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-8"
-      >
-        <h2 className="text-xl text-gray-700">
-          Welcome, <span className="font-semibold">Mr. Smith</span>
-        </h2>
-        <p className="text-gray-500 mt-1">
-          Here’s an overview of your classes and students.
-        </p>
-      </motion.div>
+      <main className="flex-1">
+        <div className="sticky top-0 z-20 flex justify-between items-center px-8 h-16 bg-white border-b border-sky-100/80 shadow-sm">
+          <h1 className="text-base font-black text-slate-800" style={{ fontFamily: "'Georgia', serif" }}>
+            {/* {NAV_ITEMS.find(n => n.id === active)?.label ?? "Dashboard"} */}
+            DashBoard
+          </h1>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-linear-to-br from-sky-500 to-teal-400 flex items-center justify-center text-white text-xs font-black shadow-md shadow-sky-300">
+              MS
+            </div>
+            <div className="hidden sm:block">
+              <p className="text-sm font-bold text-slate-700 leading-tight">Mr. Smith</p>
+              <p className="text-xs text-gray-400">Mathematics Dept.</p>
+            </div>
+          </div>
+        </div>
+        <div className="p-6">
+          {active === "dashboard" && (
+            <DashboardPage onOpen={() => setModal(true)} />
+          )}
 
-      {/* Dashboard Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        
-        {/* Students Card */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="bg-white shadow-lg rounded-2xl p-6 flex flex-col items-start"
-        >
-          <h3 className="text-lg font-semibold text-gray-800">Students</h3>
-          <p className="text-gray-500 mt-1">Manage your students</p>
-          <button className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-            View Students
-          </button>
-        </motion.div>
+          {active === "courses" && (
+            <MyCoursesPage onOpen={() => setModal(true)} />
+          )}
 
-        {/* Classes Card */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="bg-white shadow-lg rounded-2xl p-6 flex flex-col items-start"
-        >
-          <h3 className="text-lg font-semibold text-gray-800">Classes</h3>
-          <p className="text-gray-500 mt-1">Manage your classes</p>
-          <button className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-            View Classes
-          </button>
-        </motion.div>
+          {active !== "dashboard" && active !== "courses" && (
+            <div className="bg-white rounded-2xl p-10 text-gray-400">
+              Coming Soon...
+            </div>
+          )}
+        </div>
+      </main>
 
-        {/* Assignments Card */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="bg-white shadow-lg rounded-2xl p-6 flex flex-col items-start"
-        >
-          <h3 className="text-lg font-semibold text-gray-800">Assignments</h3>
-          <p className="text-gray-500 mt-1">Track and grade assignments</p>
-          <button className="mt-4 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition">
-            View Assignments
-          </button>
-        </motion.div>
-      </div>
-
-      {/* New Section: Courses */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        {/* Add Course */}
-        <motion.div
-          whileHover={{ scale: 1.03 }}
-          className="bg-white shadow-lg rounded-2xl p-6"
-        >
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Add New Course</h3>
-          <form className="flex flex-col space-y-4">
-            <input
-              type="text"
-              value={courseName}
-              onChange={(e) => {setCourseName(e.target.value)}}
-              placeholder="Course Name"
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <textarea
-              placeholder="Course Description"
-              value={courseDescription}
-              onChange={(e) => {setCourseDescription(e.target.value)}}
-              className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            ></textarea>
-            <button
-              type="submit"
-              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
-              onClick={addCourse}
-            >
-              Add Course
-            </button>
-          </form>
-        </motion.div>
-
-        {/* Monitor Courses */}
-        <motion.div
-          whileHover={{ scale: 1.03 }}
-          className="bg-white shadow-lg rounded-2xl p-6"
-        >
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Monitor Courses</h3>
-          <ul className="space-y-2 max-h-64 overflow-y-auto">
-            {/* Replace with dynamic courses from API */}
-            <li className="border border-gray-200 rounded-lg p-3 flex justify-between items-center hover:bg-gray-50 transition">
-              <span>Math 101</span>
-              <button className="text-indigo-600 hover:underline">View</button>
-            </li>
-            <li className="border border-gray-200 rounded-lg p-3 flex justify-between items-center hover:bg-gray-50 transition">
-              <span>Physics 201</span>
-              <button className="text-indigo-600 hover:underline">View</button>
-            </li>
-            <li className="border border-gray-200 rounded-lg p-3 flex justify-between items-center hover:bg-gray-50 transition">
-              <span>Chemistry 301</span>
-              <button className="text-indigo-600 hover:underline">View</button>
-            </li>
-          </ul>
-        </motion.div>
-
-      </div>
+      <AddCourseModal
+        isOpen={modal}
+        onClose={() => setModal(false)}
+      />
     </div>
   );
 }
-
-export default TeacherDashBoard;

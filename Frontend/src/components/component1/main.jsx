@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import { Bell, BookOpen, CheckCircle, Clock, BarChart3, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import { GrNext } from "react-icons/gr";
@@ -6,9 +6,9 @@ import { Link } from "react-router-dom";
 import API from "../../api/axios";
 
 const Progress = ({ value }) => (
-    <div className="w-full h-2 bg-gray-200 rounded-full">
+    <div className="w-full h-2 bg-white rounded-full">
         <div
-            className="h-2 bg-slate-900 rounded-full"
+            className="h-2 bg-blue-400 rounded-full"
             style={{ width: `${value}%` }}
         />
     </div>
@@ -76,7 +76,7 @@ const main = () => {
 
                 <section className="h-[65%] overflow-y-auto">
                     <h3 className="mx-4 text-2xl font-semibold mb-4">Continue Learning</h3>
-                    <div className="flex justify-start items-center flex-wrap gap-15 my-6">
+                    <div className="flex justify-start items-center flex-wrap gap-10 my-5">
                         {/* {[{
                             name: "JavaScript Mastery",
                             progress: 70,
@@ -103,16 +103,16 @@ const main = () => {
                             url: "/modern-blue.jpg"
                         }].map((course, i) => ( */}
 
-                        
+
                         {course.map((item, i) => (
                             <Link to="/studentDashboard/courses" key={i}>
-                                <motion.div whileHover={{ y: -6, scale: 1.05 }}>
-                                    <div style={{ backgroundImage: `url(/modern-blue.jpg)` }} className={`p-5 bg-cover bg-no-repeat rounded-3xl shadow-lg h-65 w-85 relative cursor-pointer`}>
-                                        <h4 className="text-2xl font-bold mb-3">{item.title}</h4>
-                                        <div className="w-[90%] mt-4 absolute bottom-5 p-2.5 rounded-lg">
-                                            <h4 className="text-xl font-bold mb-3">Progress</h4>
+                                <motion.div whileHover={{ y: -4, x: 3, scale: 1.02 }}>
+                                    <div style={{ backgroundImage: `url(flat-design.avif)` }} className={`p-5 bg-cover bg-no-repeat rounded-2xl shadow-lg h-65 w-85 relative cursor-pointer`}>
+                                        <h4 className="text-2xl font-bold text-blue-950 mb-3">{item.title}</h4>
+                                        <div className="w-full h-20 absolute right-0 bottom-0 p-2.5 bg-blue-950 rounded-b-2xl">
+                                            <h4 className="text-xl text-white font-bold mb-3">Progress</h4>
                                             <Progress value={35} />
-                                            <GrNext className="h-8 w-8 text-md font-ultrabold absolute top-3 right-3 p-1 bg-black/20 rounded-full cursor-pointer" />
+                                            <GrNext className="h-6 w-6 absolute top-3.5 right-3 p-1 bg-slate-300 rounded-full cursor-pointer" />
                                         </div>
                                     </div>
                                 </motion.div>
