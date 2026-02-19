@@ -23,7 +23,7 @@ export default function TeacherDashboard() {
 
       <TeachersSideBar active={active} setActive={setActive} />
 
-      <main className="flex-1">
+      <main className="flex-1 h-screen overflow-scroll">
         <div className="sticky top-0 z-20 flex justify-between items-center px-8 h-16 bg-white border-b border-sky-100/80 shadow-sm">
           <h1 className="text-base font-black text-slate-800" style={{ fontFamily: "'Georgia', serif" }}>
             {/* {NAV_ITEMS.find(n => n.id === active)?.label ?? "Dashboard"} */}
