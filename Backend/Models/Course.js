@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const LessonSchema = new mongoose.Schema({
-    id: String,
     title: {type: String, required: true},
     type: {type: String, enum: ["video", "code", "text", "images"], default: "text" },
     isCompleted: {type: Boolean, default: false},
@@ -27,8 +26,15 @@ const UnitSchema = new mongoose.Schema({
 const CourseSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: String,
-  backgroundImg: String,
-  progess: Number,
+  backgroundColor: String,
+  progess: {type: Number, default: 0},
+  instructor: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "User", 
+      required: true 
+  }, // Links the course back to the Teacher
+  subjectTag: String,
+  totalStudents: {type: Number, default: 0},
   units: [UnitSchema]
 }, { timestamps: true });
 

@@ -1,26 +1,27 @@
-import { Bell, BookOpen, CheckCircle, Clock, BarChart3, Search } from "lucide-react";
+import React from 'react';
+import { Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "../components/component1/sidebar";
 import Main from "../components/component1/main";
+import AllCourses from "../components/component1/allCourses"; 
 
-
-const Progress = ({ value }) => (
-  <div className="w-full h-2 bg-gray-200 rounded-full">
-    <div
-      className="h-2 bg-slate-900 rounded-full"
-      style={{ width: `${value}%` }}
-    />
-  </div>
-);
-
-function StudentDashboard() {
+const StudentDashboard = () => {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-100 to-slate-200 flex">
-      {/* Sidebar */}
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
+      {/* 1. Sidebar stays fixed on the left */}
       <Sidebar />
-      {/* Main Content */}
-      <Main />
+
+      <div className="flex-1 flex flex-col overflow-hidden">
+        
+        <div className="flex-1 overflow-y-auto">
+          <Routes>
+            <Route index element={<Main />} />
+            <Route path="/all-courses" element={<AllCourses />} />
+            <Route path="/my-courses" element={<div className="p-8"><h1>Enrolled Courses (Coming Soon)</h1></div>} />
+          </Routes>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default StudentDashboard;

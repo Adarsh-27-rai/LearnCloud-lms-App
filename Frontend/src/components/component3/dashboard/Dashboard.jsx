@@ -1,6 +1,8 @@
 import StatCard from "./Statcard";
 import CourseCard from "../courses/CourseCard";
 import { motion } from "framer-motion";
+import AuthContext from "../../../context/authContext";
+import { useContext } from "react";
 
 function DashboardPage({ onOpen }) {
 
@@ -10,6 +12,8 @@ function DashboardPage({ onOpen }) {
     { id: 3, title: "Chemistry 301", description: "Organic and inorganic chemistry with hands-on lab sessions.",      students: 22, lessons: 12, level: "Advanced",     subject: "Organic Chem", palette: 2 },
     { id: 4, title: "Biology 101",   description: "Cell biology, genetics, and an overview of ecosystems.",           students: 15, lessons: 9,  level: "Beginner",     subject: "Genetics",     palette: 3 },
   ];
+
+  const { allCourses } = useContext(AuthContext);
 
   return (
     <>
@@ -35,15 +39,15 @@ function DashboardPage({ onOpen }) {
           <h3 className="font-black text-slate-800">My Courses</h3>
           <button
             onClick={onOpen}
-            className="bg-gradient-to-r from-sky-500 to-teal-400 text-white px-4 py-2 rounded-xl"
+            className="bg-linear-to-r from-sky-500 to-teal-400 text-white px-4 py-2 rounded-xl"
           >
             + Add
           </button>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {previousCourse.map((c, i) => (
-            <CourseCard key={c.id} course={c} index={i} />
+          {allCourses.map((c, i) => ( 
+            <CourseCard key={c._id} course={c} index={i} />
           ))}
         </div>
       </div>

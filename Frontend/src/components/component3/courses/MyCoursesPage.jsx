@@ -1,14 +1,12 @@
 import { motion } from "framer-motion";
 import CourseCard from "./CourseCard";
+import { useContext } from "react";
+import AuthContext from "../../../context/authContext";
+
 
 export default function MyCoursesPage({ onOpen }) {
 
-    const courses = [
-    { id: 1, title: "Math 101",      description: "Fundamentals of algebra, geometry and calculus for beginners.", students: 28, lessons: 14, level: "Beginner",     subject: "Algebra",       palette: 0 },
-    { id: 2, title: "Physics 201",   description: "Mechanics, thermodynamics, and wave phenomena explored in depth.", students: 19, lessons: 10, level: "Intermediate", subject: "Mechanics",    palette: 1 },
-    { id: 3, title: "Chemistry 301", description: "Organic and inorganic chemistry with hands-on lab sessions.",      students: 22, lessons: 12, level: "Advanced",     subject: "Organic Chem", palette: 2 },
-    { id: 4, title: "Biology 101",   description: "Cell biology, genetics, and an overview of ecosystems.",           students: 15, lessons: 9,  level: "Beginner",     subject: "Genetics",     palette: 3 },
-  ];
+  const { allCourses } = useContext(AuthContext);
 
   return (
     <>
@@ -18,7 +16,7 @@ export default function MyCoursesPage({ onOpen }) {
             My Courses
           </h2>
           <p className="text-sm text-gray-400">
-            {courses.length} courses this semester
+            {allCourses.length} courses this semester
           </p>
         </div>
 
@@ -32,7 +30,7 @@ export default function MyCoursesPage({ onOpen }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {courses.map((course, index) => (
+        {allCourses.map((course, index) => (
           <CourseCard 
             key={course.id}
             course={course}

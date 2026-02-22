@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
+import API from "../../../api/axios";
 
 // // Tailwind gradient + accent classes per palette index — cool blue/cyan/teal theme
 const PALETTES = [
@@ -25,14 +26,13 @@ function AddCourseModal({ isOpen, onClose, onAdd }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [subject, setSubject] = useState("");
-  const [level, setLevel] = useState("Beginner");
   const [palIdx, setPalIdx] = useState(0);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
   function reset() {
     setStep(1); setTitle(""); setDescription("");
-    setSubject(""); setLevel("Beginner"); setPalIdx(0);
+    setSubject(""); setPalIdx(0);
     setLoading(false); setDone(false);
   }
   function handleClose() { reset(); onClose(); }
@@ -40,9 +40,14 @@ function AddCourseModal({ isOpen, onClose, onAdd }) {
   async function handleCreate() {
     if (!title.trim()) return;
     setLoading(true);
-    await new Promise(r => setTimeout(r, 900));
-    onAdd({ title, description, subject, level, palette: palIdx });
-    setLoading(false); setDone(true);
+    const course = await API.post("/course", {
+      title: title, 
+      description: description,
+      subjectTag: subject,
+      backgroundColor: pal.grad,
+    })
+    setLoading(false); 
+    setDone(true);
     setTimeout(handleClose, 1100);
   }
 
@@ -69,10 +74,10 @@ function AddCourseModal({ isOpen, onClose, onAdd }) {
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
-            <div className="w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl bg-[#061a2e] ring-1 ring-white/10 flex flex-col md:flex-row min-h-[540px]">
+            <div className="w-full max-w-200 rounded-2xl overflow-hidden shadow-2xl bg-[#061a2e] ring-1 ring-white/10 flex flex-col md:flex-row min-h-[600px]">
 
               {/* LEFT — visual panel */}
-              <div className={`relative hidden md:flex flex-col justify-between w-56 shrink-0 bg-linear-to-br ${pal.grad} p-7 overflow-hidden transition-all duration-500`}>
+              <div className={`relative hidden md:flex flex-col justify-between w-70 shrink-0 bg-linear-to-br ${pal.grad} p-7 overflow-hidden transition-all duration-500`}>
                 {/* Deco circles */}
                 <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10" />
                 <div className="absolute -bottom-8 -left-8 w-28 h-28 rounded-full bg-black/15" />
@@ -109,7 +114,7 @@ function AddCourseModal({ isOpen, onClose, onAdd }) {
                     onClick={handleClose}
                     className="w-8 h-8 rounded-lg bg-white/8 hover:bg-white/15 flex items-center justify-center text-white/50 hover:text-white/80 transition-colors"
                   >
-                    {/* <CloseIcon /> */}<FaTimes />
+                    <FaTimes />
                   </button>
                 </div>
 
@@ -171,24 +176,6 @@ function AddCourseModal({ isOpen, onClose, onAdd }) {
                         transition={{ duration: 0.2 }}
                         className="flex flex-col gap-6"
                       >
-                        {/* Level selector */}
-                        <div className="flex flex-col gap-2">
-                          <label className="text-white/40 text-[10px] font-bold tracking-widest uppercase">Difficulty Level</label>
-                          <div className="flex gap-2">
-                            {["Beginner", "Intermediate", "Advanced"].map(l => (
-                              <button
-                                key={l}
-                                onClick={() => setLevel(l)}
-                                className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition-all ${level === l
-                                    ? `border-sky-400 bg-sky-500/20 text-sky-300`
-                                    : "border-white/10 bg-white/4 text-white/40 hover:bg-white/8"
-                                  }`}
-                              >
-                                {l}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
 
                         {/* Colour picker */}
                         <div className="flex flex-col gap-2">
@@ -207,10 +194,11 @@ function AddCourseModal({ isOpen, onClose, onAdd }) {
 
                         {/* Summary preview */}
                         <div className={`flex items-center gap-3 p-4 rounded-xl border border-white/10 bg-white/5`}>
-                          <div className={`w-10 h-10 rounded-xl shrink-0 bg-gradient-to-br ${pal.grad}`} />
+                          <div className={`w-14 h-14 rounded-xl shrink-0 bg-linear-to-br ${pal.grad}`} />
                           <div>
                             <p className="text-white text-sm font-bold">{title}</p>
-                            <p className="text-white/40 text-xs mt-0.5">{level} · {subject || "No subject"}</p>
+                            <p className="text-white/60 text-sm font-semibold">{description}</p>
+                            <p className="text-white/40 text-xs mt-0.5">{subject || "No subject tag"}</p>
                           </div>
                         </div>
                       </motion.div>
@@ -233,9 +221,9 @@ function AddCourseModal({ isOpen, onClose, onAdd }) {
                     onClick={step === 1 ? () => { if (title.trim()) setStep(2); } : handleCreate}
                     disabled={(step === 1 && !title.trim()) || loading || done}
                     className={`py-3 rounded-xl text-sm font-black text-white transition-all ${step === 2 ? "flex-[2]" : "flex-1"} ${done
-                        ? "bg-gradient-to-r from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/30"
+                        ? "bg-linear-to-r from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/30"
                         : title.trim()
-                          ? `bg-gradient-to-r ${pal.btn} shadow-lg`
+                          ? `bg-linear-to-r ${pal.btn} shadow-lg`
                           : "bg-white/8 text-white/25 cursor-not-allowed"
                       }`}
                   >

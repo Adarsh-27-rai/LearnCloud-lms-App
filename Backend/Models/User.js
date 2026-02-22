@@ -13,12 +13,24 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String,
         default: "Student",
-        enums: ["Teacher","Student","Admin"]
+        enum: ["Teacher","Student","Admin"]
     },
     password: {
         type: String,
         required: true
     },
+    enrolledCourses: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Course",
+        }
+    ],
+    createdCourses: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Course",
+        }
+    ]
 })
 
 module.exports = mongoose.model("User", UserSchema);

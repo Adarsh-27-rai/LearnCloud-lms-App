@@ -6,9 +6,9 @@ import { Link } from "react-router-dom";
 import API from "../../api/axios";
 
 const Progress = ({ value }) => (
-    <div className="w-full h-2 bg-white rounded-full">
+    <div className="w-full h-1.5 bg-slate-300 rounded-full">
         <div
-            className="h-2 bg-blue-400 rounded-full"
+            className="h-1.5 bg-blue-500 rounded-full"
             style={{ width: `${value}%` }}
         />
     </div>
@@ -19,9 +19,8 @@ const main = () => {
     const [course, setCourse] = useState([]);
 
     const fetchCourse = async () => {
-        const cor = await API.get("/course");
-        // console.log(cor);
-        setCourse(cor.data);
+        const cor = await API.get("/course/my-courses");
+        setCourse(cor.data.courses);
         console.log(course);
 
     }
@@ -31,7 +30,7 @@ const main = () => {
     }, [])
     return (
         <div>
-            <main className="h-screen w-[80vw] flex-1 p-6">
+            <main className="h-screen w-[85vw] flex-1 p-6">
                 {/* Top Bar */}
                 <header className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3 w-full max-w-md">
@@ -107,12 +106,29 @@ const main = () => {
                         {course.map((item, i) => (
                             <Link to="/studentDashboard/courses" key={i}>
                                 <motion.div whileHover={{ y: -4, x: 3, scale: 1.02 }}>
-                                    <div style={{ backgroundImage: `url(flat-design.avif)` }} className={`p-5 bg-cover bg-no-repeat rounded-2xl shadow-lg h-65 w-85 relative cursor-pointer`}>
-                                        <h4 className="text-2xl font-bold text-blue-950 mb-3">{item.title}</h4>
-                                        <div className="w-full h-20 absolute right-0 bottom-0 p-2.5 bg-blue-950 rounded-b-2xl">
-                                            <h4 className="text-xl text-white font-bold mb-3">Progress</h4>
-                                            <Progress value={35} />
-                                            <GrNext className="h-6 w-6 absolute top-3.5 right-3 p-1 bg-slate-300 rounded-full cursor-pointer" />
+                                    <div
+                                        className={`bg-green-400 bg-cover bg-no-repeat rounded-2xl shadow-lg h-65 w-85 relative cursor-pointer min-h-fit z-30`}>
+                                        {/* <h4 className="text-2xl font-bold text-blue-950 mb-3">{item.title}</h4>
+                                        <span className="text-xs text-black font-semibold px-3 py-1 rounded-full bg-blue-500/25 mb-2">{item.subject}</span> */}
+                                        <div className={`relative h-30 bg-linear-to-br from-cyan-500 to-sky-400 ${item.backgroundColor} p-4 flex flex-col justify-between overflow-hidden rounded-t-2xl`}>
+                                            <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/10" />
+                                            <div className="absolute bottom-0 right-8 w-14 h-14 rounded-full bg-white/8" />
+
+                                            <h3 className="text-white font-black text-2xl relative py-2 z-10 leading-tight" style={{ fontFamily: "'Georgia', serif" }}>
+                                                {item.title}
+                                            </h3>
+                                            <span className="text-sm w-fit text-white font-semibold px-3 py-1 rounded-full bg-black/40">{item.subjectTag}</span>
+                                        </div>
+                                        <div className="w-full h-30 absolute p-2.5 bg-white rounded-b-2xl min-h-fit">
+                                            <div className="h-16">
+                                                <p className="h-12 overflow-y-scroll s1 text-sm text-slate-500 mb-2">{item.description}</p>
+                                            </div>
+                                            <div className="h-14 relative pt-1 border-t-1 border-t-gray-400/30">
+                                                <h4 className="text-md text-black font-semibold mb-2">Progress</h4>
+                                                <Progress value={35} />
+                                                <GrNext className="h-5 w-5 absolute bottom-6.5 right-0 p-1 bg-white rounded-full cursor-pointer" />
+                                            </div>
+
                                         </div>
                                     </div>
                                 </motion.div>

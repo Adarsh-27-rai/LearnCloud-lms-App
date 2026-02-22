@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   LuLayoutDashboard,
   LuBookOpen,
@@ -18,6 +19,14 @@ function TeachersSideBar({ active, setActive, collapsed, setCollapsed }) {
     { id: "students", label: "Students", icon: LuUsers },
   ];
 
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login", {replace : true});
+  }
+
   return (
     <motion.aside
       animate={{ width: collapsed ? 72 : 250 }}
@@ -26,7 +35,7 @@ function TeachersSideBar({ active, setActive, collapsed, setCollapsed }) {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 min-h-[68px]">
-        <div className="shrink-0 w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-teal-400 flex items-center justify-center shadow-lg shadow-sky-500/30">
+        <div className="shrink-0 w-9 h-9 rounded-xl bg-linear-to-br from-sky-500 to-teal-400 flex items-center justify-center shadow-lg shadow-sky-500/30">
           <span
             className="text-white font-black text-base"
             style={{ fontFamily: "'Georgia', serif" }}
@@ -96,7 +105,7 @@ function TeachersSideBar({ active, setActive, collapsed, setCollapsed }) {
 
       {/* Logout */}
       <div className="px-2.5 pb-5">
-        <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full border border-transparent text-rose-400/50 hover:bg-rose-400/10 hover:border-rose-400/20 hover:text-rose-400 transition-all">
+        <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full border border-transparent text-rose-400/50 hover:bg-rose-400/10 hover:border-rose-400/20 hover:text-rose-400 transition-all" onClick={handleLogout}>
           <span className="shrink-0 text-lg">
             <LuLogOut />
           </span>

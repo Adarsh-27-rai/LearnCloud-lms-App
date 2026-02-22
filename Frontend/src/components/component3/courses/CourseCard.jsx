@@ -22,14 +22,11 @@ export default function CourseCard({ course, index }) {
       className="bg-white rounded-2xl overflow-hidden shadow-md border border-sky-100/80 flex flex-col cursor-pointer"
     >
       {/* Coloured header */}
-      <div className={`relative h-28 bg-linear-to-br ${pal.grad} p-4 flex flex-col justify-between overflow-hidden`}>
+      <div className={`relative h-28 bg-linear-to-br ${course.backgroundColor} p-4 flex flex-col justify-between overflow-hidden`}>
         <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/10" />
         <div className="absolute bottom-0 right-8 w-14 h-14 rounded-full bg-white/8" />
 
-        <span className="inline-block self-start text-[10px] font-black tracking-widest uppercase text-white/90 bg-black/20 px-2.5 py-1 rounded-full">
-          {course.level ?? "Beginner"}
-        </span>
-        <h3 className="text-white font-black text-base relative z-10 leading-tight" style={{ fontFamily: "'Georgia', serif" }}>
+        <h3 className="text-white font-black text-xl relative py-2 z-10 leading-tight" style={{ fontFamily: "'Georgia', serif" }}>
           {course.title}
         </h3>
       </div>
@@ -39,9 +36,9 @@ export default function CourseCard({ course, index }) {
         <p className="text-gray-500 text-xs leading-relaxed line-clamp-2">
           {course.description || "No description provided."}
         </p>
-        {course.subject && (
+        {course.subjectTag && (
           <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold self-start px-2.5 py-1 rounded-full`}>
-            <FaTag /> {course.subject}
+            <FaTag /> {course.subjectTag}
           </span>
         )}
       </div>

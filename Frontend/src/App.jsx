@@ -54,7 +54,7 @@ function App() {
           <Route path='/login' element={<><Navbar /> <Login /></>} />
           {/* <Route path='/dashboard' element={role == "Student" ? <ProtectedRoute><DashBoard /></ProtectedRoute> : <ProtectedRoute><TeacherDashBoard /></ProtectedRoute>} /> */}
 
-          <Route path='/studentDashboard' element={<ProtectedRoute role={role} allowedRole="Student"><DashBoard /></ProtectedRoute>} />
+          <Route path='/studentDashboard/*' element={<ProtectedRoute role={role} allowedRole="Student"><DashBoard /></ProtectedRoute>} />
           <Route path='/teacherDashboard' element={<ProtectedRoute role={role} allowedRole="Teacher"><TeacherDashBoard /></ProtectedRoute>} />
           <Route path='/studentDashboard/courses' element={<ProtectedRoute role={role} allowedRole="Student"><CoursesApp /></ProtectedRoute>} />
           <Route path='/studentDashboard/courses/lesson' element={<ProtectedRoute role={role} allowedRole="Student"><LessonPlayer /></ProtectedRoute>} />
