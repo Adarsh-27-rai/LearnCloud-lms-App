@@ -116,7 +116,8 @@ router.get("/my-courses", authMiddleware, async (req, res) => {
   try {
     // Find user and populate the 'enrolledCourses' array with data from the 'Course' model
     const user = await User.findById(req.user)
-      .populate("enrolledCourses").lean(); // .lean() makes the query faster by returning a plain JS object
+      .populate("enrolledCourses").lean(); 
+    // .lean() makes the query faster by returning a plain JS object
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

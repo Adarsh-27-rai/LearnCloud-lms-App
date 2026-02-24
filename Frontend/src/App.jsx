@@ -16,6 +16,7 @@ import LessonPlayer from './components/component2/lesson'
 function App() {
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
 
   const fetchRole = async () => {
     try {
@@ -26,7 +27,9 @@ function App() {
         return;
       }
       const res = await API.get("/auth/me");
-      const userRole = res.data;
+      const userRole = res.data.role;
+      setEnrolledCourses(res.data.enrolledCourses);
+      console.log()
       console.log("hello", userRole)
       setRole(userRole)
     } catch (error) {
@@ -47,7 +50,7 @@ function App() {
   return (
     <>
       {/* <Home /> */}
-      <AuthContext.Provider value={{ fetchRole, role, setRole, loading }}>
+      <AuthContext.Provider value={{ fetchRole, role, setRole, loading, enrolledCourses, setEnrolledCourses }}>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/signup' element={<><Navbar /><Signup /></>} />

@@ -1,12 +1,14 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useContext, useEffect } from 'react';
 import API from '../../api/axios';
+import AuthContext from '../../context/authContext';
 import { BookOpen, Users, Clock, Star, ArrowRight, Search, CheckCircle } from "lucide-react";
 
 const AllCourses = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  // const [enrolledCourses, enrolledCourses] = useState([]);
   const [courses, setCourses] = useState([]);
 
+  const { enrolledCourses, setEnrolledCourses } = useContext(AuthContext);
 
   const filteredCourses = useMemo(() => {
     if (!courses || courses.length === 0) return [];
@@ -38,7 +40,7 @@ const AllCourses = () => {
   const fetchCourse = async () => {
     const cor = await API.get("/course");
     setCourses(cor.data);
-    console.log(courses);
+    // console.log(courses);
   }
 
   useEffect(() => {
@@ -71,7 +73,9 @@ const AllCourses = () => {
       {filteredCourses.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourses.map((course) => {
-            const isEnrolled = enrolledCourses.includes(course._id);
+            // const isEnrolled = enrolledCourses.includes(course._id.toString());
+            const enrolledMatch = enrolledCourses.find(id => id.toString() === course._id.toString());
+            const isEnrolled = (enrolledMatch) ? true : false;
 
             return (
               <div

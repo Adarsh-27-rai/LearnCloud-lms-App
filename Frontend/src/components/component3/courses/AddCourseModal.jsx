@@ -1,9 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import API from "../../../api/axios";
+import AuthContext from "../../../context/authContext";
 
-// // Tailwind gradient + accent classes per palette index — cool blue/cyan/teal theme
+
+// Tailwind gradient + accent classes per palette index — cool blue/cyan/teal theme
 const PALETTES = [
   { grad: "from-sky-500 to-cyan-400", ring: "ring-sky-400", badge: "bg-sky-100 text-sky-700", bar: "bg-sky-500", btn: "from-sky-500 to-cyan-400" },
   { grad: "from-teal-500 to-emerald-400", ring: "ring-teal-400", badge: "bg-teal-100 text-teal-700", bar: "bg-teal-500", btn: "from-teal-500 to-emerald-400" },
@@ -20,7 +22,6 @@ const SWATCH_COLORS = [
 ];
 
 
-
 function AddCourseModal({ isOpen, onClose, onAdd }) {
   const [step, setStep] = useState(1);
   const [title, setTitle] = useState("");
@@ -29,6 +30,8 @@ function AddCourseModal({ isOpen, onClose, onAdd }) {
   const [palIdx, setPalIdx] = useState(0);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+
+  const { fetchCourse } = useContext(AuthContext);
 
   function reset() {
     setStep(1); setTitle(""); setDescription("");
@@ -48,6 +51,7 @@ function AddCourseModal({ isOpen, onClose, onAdd }) {
     })
     setLoading(false); 
     setDone(true);
+    fetchCourse();
     setTimeout(handleClose, 1100);
   }
 

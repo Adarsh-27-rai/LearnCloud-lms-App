@@ -75,41 +75,12 @@ const main = () => {
 
                 <section className="h-[65%] overflow-y-auto">
                     <h3 className="mx-4 text-2xl font-semibold mb-4">Continue Learning</h3>
-                    <div className="flex justify-start items-center flex-wrap gap-10 my-5">
-                        {/* {[{
-                            name: "JavaScript Mastery",
-                            progress: 70,
-                            url: "/flat-design.avif"
-                        }, {
-                            name: "React + Tailwind",
-                            progress: 55,
-                            url: "/modern-blue.jpg"
-                        }, {
-                            name: "Backend with Node",
-                            progress: 40,
-                            url: "/white-paper-geometric-pattern.webp"
-                        }, {
-                            name: "Backend with Node",
-                            progress: 40,
-                            url: "/flat-design.avif"
-                        }, {
-                            name: "Backend with Node",
-                            progress: 40,
-                            url: "/white-paper-geometric-pattern.webp"
-                        }, {
-                            name: "Backend with Node",
-                            progress: 40,
-                            url: "/modern-blue.jpg"
-                        }].map((course, i) => ( */}
-
+                    <div className="flex justify-start items-center flex-wrap gap-12 my-5">
 
                         {course.map((item, i) => (
                             <Link to="/studentDashboard/courses" key={i}>
                                 <motion.div whileHover={{ y: -4, x: 3, scale: 1.02 }}>
-                                    <div
-                                        className={`bg-green-400 bg-cover bg-no-repeat rounded-2xl shadow-lg h-65 w-85 relative cursor-pointer min-h-fit z-30`}>
-                                        {/* <h4 className="text-2xl font-bold text-blue-950 mb-3">{item.title}</h4>
-                                        <span className="text-xs text-black font-semibold px-3 py-1 rounded-full bg-blue-500/25 mb-2">{item.subject}</span> */}
+                                    <div className={`bg-green-400 bg-cover bg-no-repeat rounded-2xl shadow-lg h-65 w-92 relative cursor-pointer min-h-fit z-30`}>
                                         <div className={`relative h-30 bg-linear-to-br from-cyan-500 to-sky-400 ${item.backgroundColor} p-4 flex flex-col justify-between overflow-hidden rounded-t-2xl`}>
                                             <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/10" />
                                             <div className="absolute bottom-0 right-8 w-14 h-14 rounded-full bg-white/8" />

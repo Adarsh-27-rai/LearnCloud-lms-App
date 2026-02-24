@@ -36,7 +36,7 @@ export default function TeacherDashboard() {
 
 
   return (
-    <AuthContext.Provider value={{allCourses}}>
+    <AuthContext.Provider value={{allCourses, fetchCourse}}>
       <div className="min-h-screen bg-sky-50 flex">
 
         <TeachersSideBar active={active} setActive={setActive} />
