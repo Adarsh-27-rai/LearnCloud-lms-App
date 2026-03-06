@@ -1,23 +1,31 @@
 const mongoose = require("mongoose");
 
+const ContentSchema = new mongoose.Schema({
+  order: { type: Number, required: true },
+  mode: {type: String, enum: ["video", "code", "text", "images"], default: "text" },
+  title: String,
+  contentDescription: String,
+  videoURL: String,
+  imageURL: String,
+});
+
 const LessonSchema = new mongoose.Schema({
-    title: {type: String, required: true},
-    type: {type: String, enum: ["video", "code", "text", "images"], default: "text" },
-    isCompleted: {type: Boolean, default: false},
-    duration: String,
-    content: String,
-    videoURL: String,
-    imageURL: String
+  order: { type: Number, required: true },
+  title: {type: String, required: true},
+  type: {type: String, enum: ["video", "code", "text", "images"], default: "text" },
+  isCompleted: {type: Boolean, default: false},
+  duration: String,
+  content: [ContentSchema],
 });
 
 const ChapterSchema = new mongoose.Schema({
-  id: String, // 'c1', 'c2'
+  order: { type: Number, required: true },
   title: { type: String, required: true },
   lessons: [LessonSchema]
 });
 
 const UnitSchema = new mongoose.Schema({
-  id: String, // 'u1', 'u2'
+  order: { type: Number, required: true },
   title: { type: String, required: true },
   description: String,
   chapters: [ChapterSchema]
@@ -32,7 +40,7 @@ const CourseSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId, 
       ref: "User", 
       required: true 
-  }, // Links the course back to the Teacher
+  },
   subjectTag: String,
   totalStudents: {type: Number, default: 0},
   units: [UnitSchema]

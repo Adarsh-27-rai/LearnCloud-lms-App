@@ -1,25 +1,16 @@
 import { motion } from "framer-motion";
 import { FaTag, FaUsers, FaBook } from "react-icons/fa";
 import { IoArrowForward } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
-const PALETTES = [
-  { grad: "from-sky-500 to-cyan-400",       ring: "ring-sky-400",     badge: "bg-sky-100 text-sky-700",        bar: "bg-sky-500",     btn: "from-sky-500 to-cyan-400"       },
-  { grad: "from-teal-500 to-emerald-400",   ring: "ring-teal-400",    badge: "bg-teal-100 text-teal-700",      bar: "bg-teal-500",    btn: "from-teal-500 to-emerald-400"   },
-  { grad: "from-cyan-500 to-sky-400",       ring: "ring-cyan-400",    badge: "bg-cyan-100 text-cyan-700",      bar: "bg-cyan-500",    btn: "from-cyan-500 to-sky-400"       },
-  { grad: "from-blue-500 to-sky-400",       ring: "ring-blue-400",    badge: "bg-blue-100 text-blue-700",      bar: "bg-blue-500",    btn: "from-blue-500 to-sky-400"       },
-  { grad: "from-indigo-500 to-blue-400",    ring: "ring-indigo-400",  badge: "bg-indigo-100 text-indigo-700",  bar: "bg-indigo-500",  btn: "from-indigo-500 to-blue-400"    },
-  { grad: "from-emerald-500 to-teal-400",   ring: "ring-emerald-400", badge: "bg-emerald-100 text-emerald-700",bar: "bg-emerald-500", btn: "from-emerald-500 to-teal-400"   },
-];
-
-export default function CourseCard({ course, index }) {
-  const pal = PALETTES[course.palette ?? 0];
+export default function CourseCard({ course, index, onClick }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.07, duration: 0.35, ease: "easeOut" }}
       whileHover={{ y: -5, transition: { duration: 0.18 } }}
-      className="bg-white rounded-2xl overflow-hidden shadow-md border border-sky-100/80 flex flex-col cursor-pointer"
+      className="bg-white rounded-2xl overflow-hidden shadow-md border border-sky-100/80 flex flex-col cursor-pointer mb-5"
     >
       {/* Coloured header */}
       <div className={`relative h-28 bg-linear-to-br ${course.backgroundColor} p-4 flex flex-col justify-between overflow-hidden`}>
@@ -53,9 +44,11 @@ export default function CourseCard({ course, index }) {
             <FaBook /> {course.lessons} lessons
           </span>
         </div>
-        <button className="flex items-center gap-1.5 text-xs font-bold text-sky-500 hover:text-sky-700 transition-colors">
+        <Link to={`/teacherDashboard/my-courses/coursePage/${course._id}`}>
+        <button className="flex items-center gap-1.5 text-xs font-bold text-sky-500 hover:text-sky-700 transition-colors" onClick={onClick}>
           View <IoArrowForward />
         </button>
+        </Link>
       </div>
     </motion.div>
   );

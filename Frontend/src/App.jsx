@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react'
 import AuthContext from "./context/authContext"
 import API from './api/axios'
 import CoursesApp from './components/component2/courses'
-import LessonPlayer from './components/component2/lesson'
+import LessonPlayer from './components/component2/lessonPlayer'
 
 function App() {
   const [role, setRole] = useState("");
@@ -58,9 +58,9 @@ function App() {
           {/* <Route path='/dashboard' element={role == "Student" ? <ProtectedRoute><DashBoard /></ProtectedRoute> : <ProtectedRoute><TeacherDashBoard /></ProtectedRoute>} /> */}
 
           <Route path='/studentDashboard/*' element={<ProtectedRoute role={role} allowedRole="Student"><DashBoard /></ProtectedRoute>} />
-          <Route path='/teacherDashboard' element={<ProtectedRoute role={role} allowedRole="Teacher"><TeacherDashBoard /></ProtectedRoute>} />
-          <Route path='/studentDashboard/courses' element={<ProtectedRoute role={role} allowedRole="Student"><CoursesApp /></ProtectedRoute>} />
-          <Route path='/studentDashboard/courses/lesson' element={<ProtectedRoute role={role} allowedRole="Student"><LessonPlayer /></ProtectedRoute>} />
+          <Route path='/teacherDashboard/*' element={<ProtectedRoute role={role} allowedRole="Teacher"><TeacherDashBoard /></ProtectedRoute>} />
+          <Route path='/studentDashboard/courses/:courseId' element={<ProtectedRoute role={role} allowedRole="Student"><CoursesApp /></ProtectedRoute>} />
+          <Route path='/studentDashboard/courses/:courseId/lesson/:lessonId' element={<ProtectedRoute role={role} allowedRole="Student"><LessonPlayer /></ProtectedRoute>} />
 
         </Routes>
       </AuthContext.Provider>

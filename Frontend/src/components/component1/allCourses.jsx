@@ -40,7 +40,7 @@ const AllCourses = () => {
   const fetchCourse = async () => {
     const cor = await API.get("/course");
     setCourses(cor.data);
-    // console.log(courses);
+    console.log(courses);
   }
 
   useEffect(() => {

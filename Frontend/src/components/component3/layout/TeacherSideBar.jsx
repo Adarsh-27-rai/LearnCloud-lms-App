@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import {
   LuLayoutDashboard,
   LuBookOpen,
@@ -7,16 +7,15 @@ import {
   LuClipboardList,
   LuUsers,
   LuLogOut,
-  LuChevronLeft
 } from "react-icons/lu";
 
-function TeachersSideBar({ active, setActive, collapsed, setCollapsed }) {
+function TeachersSideBar() {
   const items = [
-    { id: "dashboard", label: "Dashboard", icon: LuLayoutDashboard },
-    { id: "courses", label: "My Courses", icon: LuBookOpen },
-    { id: "timetable", label: "Timetable", icon: LuCalendarDays },
-    { id: "assignments", label: "Assignments", icon: LuClipboardList },
-    { id: "students", label: "Students", icon: LuUsers },
+    { id: "dashboard", label: "Dashboard", icon: LuLayoutDashboard, path: "/teacherDashboard" },
+    { id: "courses", label: "My Courses", icon: LuBookOpen, path: "/teacherDashboard/my-courses" },
+    { id: "timetable", label: "Timetable", icon: LuCalendarDays, path: "/teacherDashboard/timetable" },
+    { id: "assignments", label: "Assignments", icon: LuClipboardList, path: "/teacherDashboard/assignments" },
+    { id: "students", label: "Students", icon: LuUsers, path: "/teacherDashboard/my-students" },
   ];
 
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ function TeachersSideBar({ active, setActive, collapsed, setCollapsed }) {
 
   return (
     <motion.aside
-      animate={{ width: collapsed ? 72 : 250 }}
+      animate={{ width: 250 }}
       transition={{ type: "spring", stiffness: 320, damping: 32 }}
       className="z-30 flex flex-col bg-[#04111f] shadow-2xl overflow-hidden h-screen"
     >
@@ -45,7 +44,6 @@ function TeachersSideBar({ active, setActive, collapsed, setCollapsed }) {
         </div>
 
         <AnimatePresence>
-          {!collapsed && (
             <motion.span
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
@@ -56,48 +54,46 @@ function TeachersSideBar({ active, setActive, collapsed, setCollapsed }) {
             >
               EduPortal
             </motion.span>
-          )}
         </AnimatePresence>
       </div>
 
-      {/* Nav items */}
+    
       <nav className="flex-1 flex flex-col gap-1 px-2.5">
-        {items.map(({ id, label, icon: Icon }) => {
-          const on = active === id;
+        {items.map(({ id, label, icon: Icon, path }) => (
+          <NavLink
+            key={id}
+            to={path}
+            end={id === "dashboard"}
+            className="no-underline"
+          >
+            {({ isActive }) => (
+              <motion.div
+                whileHover={{ x: 4 }}
+                className={`flex items-center px-3 py-2.5 rounded-xl text-left transition-all border gap-4 ${
+                  isActive
+                    ? "bg-sky-500/20 border-sky-500/40 text-sky-300"
+                    : "border-transparent text-sky-200/35 hover:bg-white/5 hover:text-sky-200/70"
+                }`}
+              >
+                <span className="shrink-0 text-lg">
+                  <Icon />
+                </span>
 
-          return (
-            <motion.button
-              key={id}
-              onClick={() => setActive(id)}
-              whileHover={{ x: collapsed ? 0 : 4 }}
-              className={`flex items-center ${
-                collapsed ? "justify-center" : "gap-3"
-              } px-3 py-2.5 rounded-xl text-left transition-all border ${
-                on
-                  ? "bg-sky-500/20 border-sky-500/40 text-sky-300"
-                  : "border-transparent text-sky-200/35 hover:bg-white/5 hover:text-sky-200/70"
-              }`}
-            >
-              <span className="shrink-0 text-lg">
-                <Icon />
-              </span>
-
-              <AnimatePresence>
-                {!collapsed && (
-                  <motion.span
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -8 }}
-                    transition={{ duration: 0.14 }}
-                    className="text-[13px] font-semibold whitespace-nowrap"
-                  >
-                    {label}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
-          );
-        })}
+                <AnimatePresence>
+                    <motion.span
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -8 }}
+                      transition={{ duration: 0.14 }}
+                      className="text-[13px] font-semibold whitespace-nowrap"
+                    >
+                      {label}
+                    </motion.span>
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </NavLink>
+        ))}
       </nav>
 
       {/* Divider */}
@@ -111,7 +107,6 @@ function TeachersSideBar({ active, setActive, collapsed, setCollapsed }) {
           </span>
 
           <AnimatePresence>
-            {!collapsed && (
               <motion.span
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -121,23 +116,9 @@ function TeachersSideBar({ active, setActive, collapsed, setCollapsed }) {
               >
                 Logout
               </motion.span>
-            )}
           </AnimatePresence>
         </button>
       </div>
-
-      {/* Collapse toggle */}
-      {/* <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="absolute top-6 -right-3 w-7 h-7 rounded-full bg-[#0a2540] border-2 border-sky-500/50 text-sky-300 flex items-center justify-center shadow-lg shadow-black/30 hover:border-sky-400 transition-colors"
-      >
-        <motion.span
-          animate={{ rotate: collapsed ? 0 : 180 }}
-          transition={{ duration: 0.25 }}
-        >
-          <LuChevronLeft />
-        </motion.span>
-      </button> */}
     </motion.aside>
   );
 }

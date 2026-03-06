@@ -9,7 +9,7 @@ export default function MyCoursesPage({ onOpen }) {
   const { allCourses } = useContext(AuthContext);
 
   return (
-    <>
+    <div className="p-6">
       <div className="flex justify-between mb-7">
         <div>
           <h2 className="text-2xl font-black text-slate-800">
@@ -38,6 +38,6 @@ export default function MyCoursesPage({ onOpen }) {
           />
         ))}
       </div>
-    </>
+    </div>
   );
 }

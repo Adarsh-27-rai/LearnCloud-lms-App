@@ -15,7 +15,6 @@ const Progress = ({ value }) => (
 );
 
 const main = () => {
-
     const [course, setCourse] = useState([]);
 
     const fetchCourse = async () => {
@@ -28,6 +27,7 @@ const main = () => {
     useEffect(() => {
         fetchCourse();
     }, [])
+
     return (
         <div>
             <main className="h-screen w-[85vw] flex-1 p-6">
@@ -78,10 +78,10 @@ const main = () => {
                     <div className="flex justify-start items-center flex-wrap gap-12 my-5">
 
                         {course.map((item, i) => (
-                            <Link to="/studentDashboard/courses" key={i}>
+                            <Link to={`/studentDashboard/courses/${item._id}`} key={i}>
                                 <motion.div whileHover={{ y: -4, x: 3, scale: 1.02 }}>
                                     <div className={`bg-green-400 bg-cover bg-no-repeat rounded-2xl shadow-lg h-65 w-92 relative cursor-pointer min-h-fit z-30`}>
-                                        <div className={`relative h-30 bg-linear-to-br from-cyan-500 to-sky-400 ${item.backgroundColor} p-4 flex flex-col justify-between overflow-hidden rounded-t-2xl`}>
+                                        <div className={`relative h-30 bg-linear-to-br ${item.backgroundColor} p-4 flex flex-col justify-between overflow-hidden rounded-t-2xl`}>
                                             <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/10" />
                                             <div className="absolute bottom-0 right-8 w-14 h-14 rounded-full bg-white/8" />
 
@@ -99,7 +99,6 @@ const main = () => {
                                                 <Progress value={35} />
                                                 <GrNext className="h-5 w-5 absolute bottom-6.5 right-0 p-1 bg-white rounded-full cursor-pointer" />
                                             </div>
-
                                         </div>
                                     </div>
                                 </motion.div>

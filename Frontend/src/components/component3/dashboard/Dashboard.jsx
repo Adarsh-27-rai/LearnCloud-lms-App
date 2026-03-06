@@ -16,7 +16,7 @@ function DashboardPage({ onOpen }) {
   const { allCourses } = useContext(AuthContext);
 
   return (
-    <>
+    <div className="p-6">
       <motion.div
         initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
         className="mb-7"
@@ -51,7 +51,7 @@ function DashboardPage({ onOpen }) {
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -9,18 +9,18 @@ import AuthContext from "../../../context/authContext";
 const PALETTES = [
   { grad: "from-sky-500 to-cyan-400", ring: "ring-sky-400", badge: "bg-sky-100 text-sky-700", bar: "bg-sky-500", btn: "from-sky-500 to-cyan-400" },
   { grad: "from-teal-500 to-emerald-400", ring: "ring-teal-400", badge: "bg-teal-100 text-teal-700", bar: "bg-teal-500", btn: "from-teal-500 to-emerald-400" },
-  { grad: "from-cyan-500 to-sky-400", ring: "ring-cyan-400", badge: "bg-cyan-100 text-cyan-700", bar: "bg-cyan-500", btn: "from-cyan-500 to-sky-400" },
   { grad: "from-blue-500 to-sky-400", ring: "ring-blue-400", badge: "bg-blue-100 text-blue-700", bar: "bg-blue-500", btn: "from-blue-500 to-sky-400" },
   { grad: "from-indigo-500 to-blue-400", ring: "ring-indigo-400", badge: "bg-indigo-100 text-indigo-700", bar: "bg-indigo-500", btn: "from-indigo-500 to-blue-400" },
   { grad: "from-emerald-500 to-teal-400", ring: "ring-emerald-400", badge: "bg-emerald-100 text-emerald-700", bar: "bg-emerald-500", btn: "from-emerald-500 to-teal-400" },
+  { grad: "from-amber-500 to-yellow-400", ring: "ring-amber-400", badge: "bg-amber-100 text-amber-700", bar: "bg-amber-500", btn: "from-amber-500 to-yellow-400" },
+  { grad: "from-slate-600 to-slate-400", ring: "ring-slate-400", badge: "bg-slate-100 text-slate-700", bar: "bg-slate-500", btn: "from-slate-500 to-slate-400" },
+  { grad: "from-orange-500 to-rose-400", ring: "ring-orange-400", badge: "bg-orange-100 text-orange-700", bar: "bg-orange-500", btn: "from-orange-500 to-rose-400" },
 ];
 
 // Swatch colours for the colour picker dots (visual only)
 const SWATCH_COLORS = [
-  "bg-sky-500", "bg-teal-500", "bg-cyan-500",
-  "bg-blue-500", "bg-indigo-500", "bg-emerald-500",
+  "bg-sky-500", "bg-teal-500", "bg-blue-500", "bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-slate-500", "bg-rose-500"
 ];
-
 
 function AddCourseModal({ isOpen, onClose, onAdd }) {
   const [step, setStep] = useState(1);
