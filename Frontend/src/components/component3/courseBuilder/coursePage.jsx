@@ -1,38 +1,41 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import courseAPI from "../../../api/axios";      // your axios API layer
-import CoursePreview from "./CoursePreview";
-import CourseEditor  from "./CourseEditor";
+import API from "../../../api/axios";
+import CoursePreview from "./coursePreview";
+import CourseEditor  from "./courseEditor";
 
-// ════════════════════════════════════════════════════════════════
-// CoursePage
-// Decides whether to show CoursePreview or CourseEditor.
-// All API calls live here — the two sub-components are API-free.
-// ════════════════════════════════════════════════════════════════
 export default function CoursePage() {
-  const { id }       = useParams();
-  const navigate     = useNavigate();
+  const { courseId } = useParams();
+  const navigate = useNavigate();
 
-  const [course,  setCourse]  = useState(null);
-  const [mode,    setMode]    = useState("preview");   // "preview" | "edit"
+  const [course,  setCourse]  = useState(null);        // fix: was []
+  const [mode,    setMode]    = useState("preview");
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState(null);
 
-  // ── FETCH on mount ───────────────────────────────────────────
-  useEffect(() => {
-    courseAPI.getOne(id)
-      .then(res => setCourse(res.data))
-      .catch(err => setError(err.response?.data?.message || "Failed to load course"))
-      .finally(() => setLoading(false));
-  }, [id]);
+  async function fetchCourseContent() {
+    try {
+      const res = await API.get("/course");
+      const foundCourse = res.data.find((item) => item._id === courseId);
+      if (!foundCourse) throw new Error("Course not found");
+      setCourse(foundCourse);
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Failed to load course");
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  // ── SAVE ─────────────────────────────────────────────────────
+  useEffect(() => {
+    fetchCourseContent();
+  }, [courseId]);
+
+  // fix: was API.update(id, ...) — id undefined, wrong method
   const handleSave = async (updatedCourse) => {
-    const res = await courseAPI.update(id, updatedCourse);
-    setCourse(res.data);   // keep parent state in sync with server response
+    const res = await API.put(`/course/${courseId}`, updatedCourse);
+    setCourse(res.data);
   };
 
-  // ── Loading / error states ───────────────────────────────────
   if (loading) return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center">
       <div className="text-stone-400 text-sm animate-pulse">Loading course…</div>
@@ -45,14 +48,13 @@ export default function CoursePage() {
     </div>
   );
 
-  // ── Render ───────────────────────────────────────────────────
   if (mode === "edit") {
     return (
       <CourseEditor
         course={course}
         onSave={handleSave}
         onPreview={() => setMode("preview")}
-        onBack={() => navigate("/courses")}
+        onBack={() => navigate("/teacherDashboard/my-courses")}
       />
     );
   }
@@ -61,7 +63,7 @@ export default function CoursePage() {
     <CoursePreview
       course={course}
       onEdit={() => setMode("edit")}
-      onBack={() => navigate("/courses")}
+      onBack={() => navigate("/teacherDashboard/my-courses")}
     />
   );
 }

@@ -13,7 +13,7 @@ export default function CourseCard({ course, index, onClick }) {
       className="bg-white rounded-2xl overflow-hidden shadow-md border border-sky-100/80 flex flex-col cursor-pointer mb-5"
     >
       {/* Coloured header */}
-      <div className={`relative h-28 bg-linear-to-br ${course.backgroundColor} p-4 flex flex-col justify-between overflow-hidden`}>
+      <div className={`relative h-34 bg-linear-to-br ${course.backgroundColor} p-4 flex flex-col justify-between overflow-hidden`}>
         <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/10" />
         <div className="absolute bottom-0 right-8 w-14 h-14 rounded-full bg-white/8" />
 

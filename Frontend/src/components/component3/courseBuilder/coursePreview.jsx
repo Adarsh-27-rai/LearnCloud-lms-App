@@ -11,7 +11,8 @@ function BlockPreview({ block }) {
         if (line.startsWith("## ")) return <h3 key={i} className="text-base font-black text-stone-800 mt-5 mb-1.5">{line.slice(3)}</h3>;
         if (line.startsWith("- ")) return <div key={i} className="flex gap-2 my-0.5"><span className="text-amber-400 mt-1 text-xs shrink-0">◆</span><span dangerouslySetInnerHTML={{ __html: line.slice(2).replace(/`([^`]+)`/g, "<code class='bg-stone-100 px-1 rounded text-xs font-mono text-sky-700'>$1</code>") }} /></div>;
         if (line === "") return <div key={i} className="h-2" />;
-        return <p key={i} className="my-1" dangerouslySetInnerHTML={{ __html: line.replace(/`([^`]+)`/g, "<code class='bg-stone-100 px-1 rounded text-xs font-mono text-sky-700'>$1</code>").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />;
+        return line;
+        // return <p key={i} className="my-1" dangerouslySetInnerHTML={{ __html: line.replace(/`([^`]+)`/g, "<code class='bg-stone-100 px-1 rounded text-xs font-mono text-sky-700'>$1</code>").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />;
       })}
     </div>
   );
@@ -261,7 +262,7 @@ export default function CoursePreview({ course, onEdit, onBack }) {
                         </div>
 
                         <div className="space-y-4">
-                          {(activeLessonObj.blocks || []).map((block, bi) => (
+                          {(activeLessonObj.content || []).map((block, bi) => (
                             <motion.div key={block._lid || bi} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: bi * .05 }}>
                               <BlockPreview block={block} />
                             </motion.div>

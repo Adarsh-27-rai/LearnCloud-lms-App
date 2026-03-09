@@ -65,6 +65,28 @@ router.post("/:courseId/unit/:unitId/chapter/:chapterId/lesson", async (req, res
     }
 })
 
+router.post("/:courseId/unit/:unitId/chapter/:chapterId/lesson/:lessonId/content", async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.courseId);
+        if (!course) return res.status(404).json({ message: "Course not found" });
+
+        const units = course.units.find(u => u.id == req.params.unitId);
+        if (!units) return res.status(404).json({ message: "Unit not found" });
+
+        const chapter = units.chapters.find(c => c.id === req.params.chapterId);
+        if (!chapter) return res.status(404).json({ message: "Chapter not found" });
+
+        const lesson = chapter.lessons.find(c => c.id === req.params.lessonId);
+        if (!lesson) return res.status(404).json({ message: "Lesson not found" });
+
+        lesson.content.push(req.body);
+        await course.save()
+        res.status(201).json(course);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+})
+
 router.get("/createdCourses", authMiddleware, async (req,res) => {
     const courses = await Course.find({instructor: req.user});
     res.status(201).json(courses);
@@ -133,6 +155,35 @@ router.get("/my-courses", authMiddleware, async (req, res) => {
   } catch (error) {
     console.error("Error fetching enrolled courses:", error);
     res.status(500).json({ message: "Server error fetching your courses" });
+  }
+});
+
+// Add this route to your existing course router (courseRoutes.js)
+// Place it alongside your other router.post / router.get routes
+
+router.put("/:courseId", authMiddleware, async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.courseId);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+
+    // Optional: ensure only the instructor can update
+    if (course.instructor.toString() !== req.user.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    // Allow updating top-level fields + the full units tree
+    const { title, description, subjectTag, backgroundColor, units } = req.body;
+
+    if (title !== undefined)           course.title           = title;
+    if (description !== undefined)     course.description     = description;
+    if (subjectTag !== undefined)      course.subjectTag      = subjectTag;
+    if (backgroundColor !== undefined) course.backgroundColor = backgroundColor;
+    if (units !== undefined)           course.units           = units;
+
+    await course.save();
+    res.status(200).json(course);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 });
 

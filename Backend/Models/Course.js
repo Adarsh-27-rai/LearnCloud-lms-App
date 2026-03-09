@@ -2,11 +2,13 @@ const mongoose = require("mongoose");
 
 const ContentSchema = new mongoose.Schema({
   order: { type: Number, required: true },
-  mode: {type: String, enum: ["video", "code", "text", "images"], default: "text" },
+  type: {type: String, enum: ["video", "code", "text", "images"], default: "text" },
   title: String,
-  contentDescription: String,
+  value: String,
+  filename: String,
   videoURL: String,
   imageURL: String,
+  caption: String
 });
 
 const LessonSchema = new mongoose.Schema({
