@@ -5,6 +5,19 @@ import { motion, AnimatePresence } from "framer-motion";
 // Block Preview
 // ════════════════════════════════════════════════════════════════
 function BlockPreview({ block }) {
+  function getEmbedURL(url) {
+    if (url.includes("youtu.be")) {
+      const id = url.split("youtu.be/")[1].split("?")[0];
+      return `https://www.youtube.com/embed/${id}`;
+    }
+
+    if (url.includes("watch?v=")) {
+      const id = url.split("v=")[1].split("&")[0];
+      return `https://www.youtube.com/embed/${id}`;
+    }
+
+    return url;
+  }
   if (block.type === "text") return (
     <div className="text-[15px] text-stone-600 leading-relaxed" style={{ fontFamily: "'Lora',Georgia,serif" }}>
       {block.value.split("\n").map((line, i) => {
@@ -29,23 +42,24 @@ function BlockPreview({ block }) {
     </div>
   );
 
-  if (block.type === "image") return (
+  if (block.type === "images") return (
     <figure className="rounded-xl overflow-hidden border border-stone-100">
-      {block.value && <img src={block.value} alt={block.caption || ""} className="w-full max-h-72 object-cover" onError={e => e.target.style.display = "none"} />}
+      {block.imageURL && <img src={block.imageURL} alt={block.caption || ""} className="w-full max-h-72 object-cover" />}
       {block.caption && <figcaption className="text-center text-[11px] text-stone-400 italic py-2 px-4 bg-stone-50">{block.caption}</figcaption>}
     </figure>
   );
 
   if (block.type === "video") return (
     <div className="rounded-xl overflow-hidden border border-stone-100 shadow-sm">
-      <div className="aspect-video bg-stone-900 relative flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-stone-800 to-stone-950 opacity-80" />
-        <a href={block.value} target="_blank" rel="noopener noreferrer" className="relative z-10 flex flex-col items-center gap-2 group/p">
+      <div className="aspect-video relative flex items-center justify-center">
+        <div className="absolute opacity-80" />
+        {/* <a href={block.videoURL} target="_blank" rel="noopener noreferrer" className="relative z-10 flex flex-col items-center gap-2 group/p">
           <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-xl group-hover/p:scale-110 transition-transform duration-200">
             <span className="text-2xl ml-1" style={{ color: "#f59e0b" }}>▶</span>
           </div>
           <span className="text-white/50 text-xs tracking-wide">Open Video</span>
-        </a>
+        </a> */}
+        <iframe src={getEmbedURL(block.videoURL)} className="w-full h-full" allowFullScreen title={block.caption || "Lesson video"} />
       </div>
       {block.caption && <p className="text-center text-[11px] text-stone-400 italic py-2 px-4 bg-stone-50">{block.caption}</p>}
     </div>

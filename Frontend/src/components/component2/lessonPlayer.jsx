@@ -1,47 +1,63 @@
-import React, { useState } from "react";
-import { courseData, flatLessons } from "./lessons/courseData";
+import React, { useEffect, useState } from "react";
 import CourseSidebar from "./lessons/lessonSidebar";
 import LessonContent from "./lessons/lessonContent";
+import { useParams } from "react-router-dom";
 
-/**
- * LessonPlayer
- *
- * Root component — owns sidebar open/close state and current lesson state.
- * In a real app, replace useState(lessons[0]) with useParams() + useNavigate().
- */
-const LessonPlayer = () => {
-  const lessons = flatLessons(courseData);
-  const [currentLesson, setCurrentLesson] = useState(lessons[0]);
-  const [isSidebarOpen, setSidebarOpen]   = useState(true);
+const LessonPlayer = ({ courses, fetchCourse }) => {
+  const { courseId, lessonId } = useParams();
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [currentCourse, setCurrentCourse] = useState(null);
+  const [currentLesson, setCurrentLesson] = useState(null);
+
+  // Step 1 — fetch and find the course
+  useEffect(() => {
+    fetchCourse();
+  }, []);
+
+  useEffect(() => {
+    if (!courses?.courses) return;
+    const found = courses.courses.find((item) => item._id.toString() === courseId);
+    setCurrentCourse(found ?? null);
+  }, [courseId, courses]);
+
+  // Step 2 — once course is set, find the lesson
+  useEffect(() => {
+    if (!currentCourse) return;
+    const lessons = currentCourse.units
+      ?.flatMap((unit) => unit.chapters)
+      ?.flatMap((chapter) => chapter.lessons) ?? [];
+    const found = lessons.find((l) => l._id.toString() === lessonId.toString());
+    setCurrentLesson(found ?? null);
+  }, [currentCourse, lessonId]); // ← depends on currentCourse, not lessons[]
+
+  const allLessons = currentCourse?.units
+    ?.flatMap((unit) => unit.chapters)
+    ?.flatMap((chapter) => chapter.lessons) ?? [];
 
   const handleNext = () => {
-    const idx  = lessons.findIndex((l) => l._id === currentLesson._id);
-    const next = lessons[idx + 1];
+    if (!currentLesson) return;
+    const idx = allLessons.findIndex((l) => l._id === currentLesson._id);
+    const next = allLessons[idx + 1];
     if (next) setCurrentLesson(next);
   };
 
   return (
     <div className="flex h-screen bg-white overflow-hidden font-sans">
-
-      {/* Sidebar slide wrapper */}
       <div className={`transition-all duration-300 overflow-hidden flex-shrink-0 ${isSidebarOpen ? "w-80" : "w-0"}`}>
         <CourseSidebar
-          course={courseData}
-          currentLessonId={currentLesson._id}
+          course={currentCourse}
+          currentLessonId={currentLesson?._id}
           onClose={() => setSidebarOpen(false)}
         />
       </div>
-
-      {/* Main content */}
       <LessonContent
         lesson={currentLesson}
-        courseTitle={courseData.title}
-        allLessons={lessons}
+        courseTitle={currentCourse?.title}
+        allLessons={allLessons}
         onNext={handleNext}
         isSidebarOpen={isSidebarOpen}
         onOpenSidebar={() => setSidebarOpen(true)}
       />
-
     </div>
   );
 };

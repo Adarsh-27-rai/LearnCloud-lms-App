@@ -1,9 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  FiArrowLeft, FiX, FiPlay, FiCode,
-  FiFileText, FiImage, FiCheckCircle,
-} from "react-icons/fi";
+import { FiArrowLeft, FiX, FiPlay, FiCode, FiFileText, FiImage, FiCheckCircle } from "react-icons/fi";
 
 const TYPE_ICON = { video: FiPlay, code: FiCode, text: FiFileText, images: FiImage };
 
@@ -15,6 +12,7 @@ const TYPE_ICON = { video: FiPlay, code: FiCode, text: FiFileText, images: FiIma
  *  currentLessonId — active lesson _id string
  *  onClose         — () => void
  */
+
 const LessonSidebar = ({ course, currentLessonId, onClose }) => {
   const courseId    = course?._id ?? course?.id;
   const sortedUnits = [...(course?.units ?? [])].sort((a, b) => a.order - b.order);
@@ -42,26 +40,26 @@ const LessonSidebar = ({ course, currentLessonId, onClose }) => {
           const sortedChapters = [...(unit.chapters ?? [])].sort((a, b) => a.order - b.order);
           return (
             <div key={unit._id ?? unit.order} className="mb-8">
-              <h4 className="text-[10px] font-bold text-blue-500 uppercase mb-3 tracking-widest px-2">
-                Unit {String(idx + 1).padStart(2, "0")}
+              <h4 className="text-xs font-bold text-blue-500 uppercase mb-3 tracking-widest px-2">
+                Unit {unit.order}
               </h4>
 
               {sortedChapters.map((chapter) => {
                 const sortedLessons = [...(chapter.lessons ?? [])].sort((a, b) => a.order - b.order);
                 return (
                   <div key={chapter._id ?? chapter.order} className="mb-4">
-                    <p className="text-sm font-bold text-gray-200 mb-2 px-2 opacity-60">
+                    <p className="text-md font-bold text-gray-200 mb-2 px-2 opacity-60">
                       {chapter.title}
                     </p>
                     <div className="space-y-1">
                       {sortedLessons.map((lesson) => {
-                        const lid      = lesson._id ?? lesson.id;
+                        const lid = lesson._id ?? lesson.id;
                         const isActive = String(lid) === String(currentLessonId);
-                        const Icon     = TYPE_ICON[lesson.type] ?? FiPlay;
+                        const Icon = TYPE_ICON[lesson.type] ?? FiPlay;
                         return (
                           <Link
                             key={lid}
-                            to={`/course/${courseId}/lesson/${lid}`}
+                            to={`/studentDashboard/courses/${courseId}/lesson/${lid}`}
                             className={`w-full flex items-center gap-3 p-3 rounded-xl text-sm transition group
                               ${isActive
                                 ? "bg-blue-600 text-white shadow-md"

@@ -254,25 +254,6 @@ function LessonEditor({ lesson, onChange }) {
           value={lesson.duration || ""}
           onChange={(e) => onChange({ duration: e.target.value })}
         />
-        {/* <div className="col-span-3 flex items-center gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-stone-300">
-            Primary type:
-          </span>
-          {BLOCK_TYPES.map((bt) => (
-            <button
-              key={bt.type}
-              onClick={() => onChange({ type: bt.type })}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all"
-              style={{
-                borderColor: lesson.type === bt.type ? bt.color : bt.color + "33",
-                color: bt.color,
-                background: lesson.type === bt.type ? bt.color + "22" : bt.color + "08",
-              }}
-            >
-              {bt.icon} {bt.label}
-            </button>
-          ))}
-        </div> */}
       </div>
 
       {/* Content blocks */}

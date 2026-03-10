@@ -158,8 +158,7 @@ router.get("/my-courses", authMiddleware, async (req, res) => {
   }
 });
 
-// Add this route to your existing course router (courseRoutes.js)
-// Place it alongside your other router.post / router.get routes
+// Put request to update
 
 router.put("/:courseId", authMiddleware, async (req, res) => {
   try {
@@ -174,11 +173,21 @@ router.put("/:courseId", authMiddleware, async (req, res) => {
     // Allow updating top-level fields + the full units tree
     const { title, description, subjectTag, backgroundColor, units } = req.body;
 
-    if (title !== undefined)           course.title           = title;
-    if (description !== undefined)     course.description     = description;
-    if (subjectTag !== undefined)      course.subjectTag      = subjectTag;
-    if (backgroundColor !== undefined) course.backgroundColor = backgroundColor;
-    if (units !== undefined)           course.units           = units;
+    if (title !== undefined) { 
+      course.title  = title;
+    }
+    if (description !== undefined) {   
+      course.description = description;
+    }
+    if (subjectTag !== undefined) {
+      course.subjectTag = subjectTag;
+    }
+    if (backgroundColor !== undefined) { 
+      course.backgroundColor = backgroundColor;
+    }
+    if (units !== undefined){           
+      course.units = units;
+    }
 
     await course.save();
     res.status(200).json(course);

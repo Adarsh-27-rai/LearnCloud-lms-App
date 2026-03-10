@@ -1,32 +1,139 @@
 import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiPlay, FiDownload, FiMessageSquare, FiCheckCircle } from "react-icons/fi";
-import { VideoBlock, renderBlock } from "./contentBlock";
 
-/**
- * LessonContent
- *
- * Props:
- *  lesson        — LessonSchema document (with content[] array)
- *  courseTitle   — string
- *  allLessons    — flat sorted array of all lessons (for Next button)
- *  onNext        — () => void
- *  isSidebarOpen — boolean
- *  onOpenSidebar — () => void
- */
+function BlockText({ block }) {
+  return (
+    <div className="text-gray-600 text-base leading-relaxed">
+      {block.value.split("\n").map((line, i) => {
+        if (line.startsWith("## "))
+          return <h3 key={i} className="text-lg font-bold text-slate-800 mt-5 mb-2">{line.slice(3)}</h3>;
+        if (line.startsWith("- "))
+          return (
+            <div key={i} className="flex gap-2 items-start my-0.5">
+              <span className="text-blue-400 mt-1.5 text-[10px] shrink-0">●</span>
+              <span dangerouslySetInnerHTML={{
+                __html: line.slice(2)
+                  .replace(/`([^`]+)`/g, "<code class='bg-slate-100 px-1 py-0.5 rounded text-xs font-mono text-blue-700'>$1</code>")
+                  .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+              }} />
+            </div>
+          );
+        if (line === "") return <div key={i} className="h-2" />;
+        return (
+          <p key={i} className="my-1" dangerouslySetInnerHTML={{
+            __html: line
+              .replace(/`([^`]+)`/g, "<code class='bg-slate-100 px-1 py-0.5 rounded text-xs font-mono text-blue-700'>$1</code>")
+              .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+          }} />
+        );
+      })}
+    </div>
+  );
+}
+
+function BlockCode({ block }) {
+  return (
+    <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+      <div className="flex items-center gap-1.5 px-4 py-2.5 bg-[#1a1a2e]">
+        <div className="w-2.5 h-2.5 rounded-full bg-red-400/70" />
+        <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/70" />
+        <div className="w-2.5 h-2.5 rounded-full bg-green-400/70" />
+        {block.filename && <span className="ml-3 text-slate-400 text-[11px] font-mono">{block.filename}</span>}
+      </div>
+      <pre className="bg-[#0d0d1a] text-emerald-300 font-mono text-sm px-6 py-5 overflow-x-auto leading-relaxed whitespace-pre-wrap">
+        {block.value}
+      </pre>
+    </div>
+  );
+}
+
+function BlockImage({ block }) {
+  return (
+    <figure className="h-fit rounded-2xl overflow-hidden border border-slate-100 flex justify-center items-center flex-col">
+      {block.imageURL && (
+        <img src={block.imageURL.toString()} alt={block.caption || ""} className="w-fit max-h-100 object-cover"
+          onError={(e) => (e.target.style.display = "none")} />
+      )}
+      {block.caption && (
+        <figcaption className="w-full text-center text-xs text-slate-600 italic py-2 px-4 bg-slate-100">
+          {block.caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+function VideoBlock({ block }) {
+  function getEmbedURL(url) {
+    if (url.includes("youtu.be")) {
+      const id = url.split("youtu.be/")[1].split("?")[0];
+      return `https://www.youtube.com/embed/${id}`;
+    }
+
+    if (url.includes("watch?v=")) {
+      const id = url.split("v=")[1].split("&")[0];
+      return `https://www.youtube.com/embed/${id}`;
+    }
+
+    return url;
+  }
+
+  if (block?.videoURL) {
+    return (
+      <div className="aspect-video rounded-3xl overflow-hidden shadow-2xl mb-10 border-4 border-white">
+        <iframe src={getEmbedURL(block.videoURL)} className="w-full h-full" allowFullScreen title={block.caption || "Lesson video"} />
+      </div>
+    );
+
+  }
+  return (
+    <div className="aspect-video bg-slate-900 rounded-3xl shadow-2xl mb-10 flex items-center justify-center relative overflow-hidden group cursor-pointer border-4 border-white shadow-slate-200">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 transition-all group-hover:scale-110 group-hover:bg-white/20 z-10">
+        <FiPlay size={32} className="text-white ml-1" />
+      </div>
+    </div>
+  );
+}
+
+export function renderBlock(block, idx) {
+  const key = block._id || block._lid || idx;
+  const mode = block.mode || block.type;
+  if (mode === "text") return <BlockText key={key} block={block} />;
+  if (mode === "code") return <BlockCode key={key} block={block} />;
+  if (mode === "images") return <BlockImage key={key} block={block} />;
+  if (mode === "video") return <VideoBlock key={key} block={block} />;
+
+  return null;
+}
+
+// ── LessonContent ────────────────────────────────────────────────────────────
+
 const LessonContent = ({ lesson, courseTitle, allLessons = [], onNext, isSidebarOpen, onOpenSidebar }) => {
   const sortedContent = [...(lesson?.content ?? [])].sort((a, b) => a.order - b.order);
-  const lessonIdx     = allLessons.findIndex((l) => l._id === lesson?._id);
-  const hasNext       = lessonIdx >= 0 && lessonIdx < allLessons.length - 1;
-  const statusLabel   = lesson?.isCompleted ? "Completed" : "In Progress";
+  const lessonIdx = allLessons.findIndex((l) => l._id === lesson?._id);
+  const hasNext = lessonIdx >= 0 && lessonIdx < allLessons.length - 1;
+  const statusLabel = lesson?.isCompleted ? "Completed" : "In Progress";
 
-  // First video block sits above the title; everything else renders below
-  const videoBlock  = sortedContent.find((b) => b.mode === "video");
-  const otherBlocks = sortedContent.filter((b) => b.mode !== "video");
+  // const videoBlock  = sortedContent.find((b)  => (b.mode || b.type) === "video");
+  // const otherBlocks = sortedContent.filter((b) => (b.mode || b.type) !== "video");
+
+  // if (lesson) {
+  //   console.log("=== LESSON CONTENT DEBUG ===");
+  //   console.log("full lesson object:", JSON.stringify(lesson, null, 2));
+  //   console.log("lesson.content:", lesson.content);
+  //   console.log("sortedContent:", sortedContent);
+  //   console.log("videoBlock:", videoBlock);
+  //   console.log("otherBlocks:", otherBlocks);
+  //   console.log("block keys sample:", lesson.content?.[0] ? Object.keys(lesson.content[0]) : "content is empty or undefined");
+  //   console.log("============================");
+  // }
 
   return (
     <main className="flex-1 flex flex-col h-full bg-white relative min-w-0">
 
-      {/* ── Top bar ── */}
+      {/* Top bar */}
       <header className="h-16 border-b flex items-center justify-between px-6 sticky top-0 bg-white z-10">
         <div className="flex items-center gap-4">
           {!isSidebarOpen && (
@@ -45,82 +152,108 @@ const LessonContent = ({ lesson, courseTitle, allLessons = [], onNext, isSidebar
             className={`flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition border
               ${hasNext
                 ? "text-blue-600 hover:bg-blue-50 border-transparent hover:border-blue-100 cursor-pointer"
-                : "text-gray-300 border-transparent cursor-not-allowed"
-              }`}
+                : "text-gray-300 border-transparent cursor-not-allowed"}`}
           >
             Next Lesson <FiCheckCircle size={16} />
           </button>
         </div>
       </header>
 
-      {/* ── Scrollable body ── */}
-      <div className="flex-1 overflow-y-auto p-6 md:p-12">
-        <div className="max-w-4xl mx-auto">
+      {/* Body */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={lesson?._id ?? "empty"}
+          initial={{ opacity: 0, x: 8 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+          className="flex-1 overflow-y-auto p-6 md:p-12"
+        >
+          <div className="max-w-4xl mx-auto">
 
-          {/* 1 — Video player (or placeholder) */}
-          {videoBlock
-            ? <VideoBlock block={videoBlock} />
-            : (
-              <div className="aspect-video bg-slate-900 rounded-3xl shadow-2xl mb-10 flex items-center justify-center relative overflow-hidden group cursor-pointer border-4 border-white shadow-slate-200">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 transition-all group-hover:scale-110 group-hover:bg-white/20 z-10">
-                  <FiPlay size={32} className="text-white ml-1" />
+            {!lesson ? (
+              <div className="flex flex-col items-center justify-center py-32 text-center">
+                <div className="w-20 h-20 bg-slate-100 rounded-3xl flex items-center justify-center mb-6">
+                  <FiPlay size={32} className="text-slate-300 ml-1" />
                 </div>
+                <h2 className="text-xl font-extrabold text-slate-700 mb-2">Select a lesson to begin</h2>
+                <p className="text-gray-400 text-sm max-w-xs">Choose any lesson from the sidebar to start learning.</p>
               </div>
-            )
-          }
+            ) : (
+              <>
+                {/* 1 — Video */}
+                {/* {videoBlock
+                  ? <VideoBlock block={videoBlock} />
+                  : (
+                    <div className="aspect-video bg-slate-900 rounded-3xl shadow-2xl mb-10 flex items-center justify-center relative overflow-hidden group cursor-pointer border-4 border-white shadow-slate-200">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 transition-all group-hover:scale-110 group-hover:bg-white/20 z-10">
+                        <FiPlay size={32} className="text-white ml-1" />
+                      </div>
+                    </div>
+                  )
+                } */}
 
-          {/* 2 — Title + meta + action buttons */}
-          <div className="flex flex-col md:flex-row md:items-start justify-between mb-8 border-b border-gray-100 pb-8 gap-6">
-            <div>
-              <h1 className="text-3xl font-extrabold text-slate-900 mb-2">{lesson?.title}</h1>
-              <div className="flex items-center gap-3 text-gray-400 text-sm font-medium">
-                <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-600 uppercase text-[10px] font-bold">
-                  {statusLabel}
-                </span>
-                {lesson?.duration && (
-                  <>
-                    <span>•</span>
-                    <span>{lesson.duration}</span>
-                  </>
-                )}
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button title="Download Resources" className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition active:scale-95">
-                <FiDownload size={20} />
-              </button>
-              <button title="Community Discussion" className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition active:scale-95">
-                <FiMessageSquare size={20} />
-              </button>
-            </div>
-          </div>
-
-          {/* 3 — Text / code content blocks (or fallback) */}
-          <div className="space-y-2">
-            {otherBlocks.length > 0
-              ? otherBlocks.map(renderBlock)
-              : (
-                <>
-                  <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                    Welcome to <strong>{lesson?.title}</strong>. In this session, we dive deep into the implementation details.
-                    Ensure you have your development environment ready before proceeding with the code samples provided below the video.
-                  </p>
-                  <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                    <h3 className="text-slate-900 font-bold mb-3">Key Takeaways</h3>
-                    <ul className="list-disc list-inside text-gray-600 space-y-1">
-                      <li>Understanding the "Why" behind this pattern</li>
-                      <li>Common pitfalls and how to avoid them</li>
-                      <li>Optimizing for production performance</li>
-                    </ul>
+                {/* 2 — Title + meta */}
+                <div className="flex flex-col md:flex-row md:items-start justify-between mb-8 border-b border-gray-100 pb-8 gap-6">
+                  <div>
+                    <h1 className="text-3xl font-extrabold text-slate-900 mb-2">{lesson.title}</h1>
+                    <div className="flex items-center gap-3 text-gray-400 text-sm font-medium">
+                      <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-600 uppercase text-[10px] font-bold">
+                        {statusLabel}
+                      </span>
+                      {lesson.duration && <><span>•</span><span>{lesson.duration}</span></>}
+                    </div>
                   </div>
-                </>
-              )
-            }
-          </div>
+                  <div className="flex gap-2">
+                    <button title="Download Resources" className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition active:scale-95">
+                      <FiDownload size={20} />
+                    </button>
+                    <button title="Community Discussion" className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition active:scale-95">
+                      <FiMessageSquare size={20} />
+                    </button>
+                  </div>
+                </div>
 
-        </div>
-      </div>
+                {/* 3 — Content blocks */}
+                <div className="space-y-4">
+                  {sortedContent.length > 0
+                    ? sortedContent.map((block, i) => (
+                      <motion.div
+                        key={block._id || block._lid || i}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.06 }}
+                      >
+                        {renderBlock(block, i)}
+                      </motion.div>
+                    ))
+                    : (
+                      <>
+                        <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                          Welcome to <strong>{lesson.title}</strong>. In this session, we dive deep into the
+                          implementation details. Ensure you have your development environment ready before
+                          proceeding with the code samples provided below the video.
+                        </p>
+                        <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                          <h3 className="text-slate-900 font-bold mb-3">Key Takeaways</h3>
+                          <ul className="list-disc list-inside text-gray-600 space-y-1">
+                            <li>Understanding the "Why" behind this pattern</li>
+                            <li>Common pitfalls and how to avoid them</li>
+                            <li>Optimizing for production performance</li>
+                          </ul>
+                        </div>
+                      </>
+                    )
+                  }
+                </div>
+              </>
+            )}
+
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
     </main>
   );
 };

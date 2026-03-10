@@ -43,6 +43,18 @@ function App() {
     fetchRole();
   }, [])
 
+  const [courses, setCourses] = useState([]);
+
+  const fetchCourse = async () => {
+    try {
+      const res = await API.get("/course/my-courses");
+      const course = res.data;
+      setCourses(course);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -59,8 +71,8 @@ function App() {
 
           <Route path='/studentDashboard/*' element={<ProtectedRoute role={role} allowedRole="Student"><DashBoard /></ProtectedRoute>} />
           <Route path='/teacherDashboard/*' element={<ProtectedRoute role={role} allowedRole="Teacher"><TeacherDashBoard /></ProtectedRoute>} />
-          <Route path='/studentDashboard/courses/:courseId' element={<ProtectedRoute role={role} allowedRole="Student"><CoursesApp /></ProtectedRoute>} />
-          <Route path='/studentDashboard/courses/:courseId/lesson/:lessonId' element={<ProtectedRoute role={role} allowedRole="Student"><LessonPlayer /></ProtectedRoute>} />
+          <Route path='/studentDashboard/courses/:courseId' element={<ProtectedRoute role={role} allowedRole="Student"><CoursesApp courses={courses} setCourses={setCourses} fetchCourse={fetchCourse}/></ProtectedRoute>} />
+          <Route path='/studentDashboard/courses/:courseId/lesson/:lessonId' element={<ProtectedRoute role={role} allowedRole="Student"><LessonPlayer courses={courses} setCourses={setCourses} fetchCourse={fetchCourse}/></ProtectedRoute>} />
 
         </Routes>
       </AuthContext.Provider>
