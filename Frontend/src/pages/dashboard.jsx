@@ -29,7 +29,7 @@ const StudentDashboard = () => {
             <Route index element={<Main />} />
             <Route path="/all-courses" element={<AllCourses />} />
             <Route path="/my-courses" element={<div className="p-8"><h1>Enrolled Courses (Coming Soon)</h1></div>} />
-            <Route path="/timetable" element={<div className="p-8"><h1>TimeTable (Coming Soon)</h1></div>} />
+            {/* <Route path="/timetable" element={<div className="p-8"><h1>TimeTable (Coming Soon)</h1></div>} /> */}
             <Route path="/queries" element={<div className="p-8"><h1>Queries (Coming Soon)</h1></div>} />
           </Routes>
         </div>

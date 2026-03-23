@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiPlay, FiDownload, FiMessageSquare, FiCheckCircle } from "react-icons/fi";
+import API from "../../../api/axios";
+import { FiMenu, FiPlay, FiDownload, FiCheckCircle } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 function BlockText({ block }) {
   return (
@@ -110,25 +112,61 @@ export function renderBlock(block, idx) {
 
 // ── LessonContent ────────────────────────────────────────────────────────────
 
-const LessonContent = ({ lesson, courseTitle, allLessons = [], onNext, isSidebarOpen, onOpenSidebar }) => {
+const LessonContent = ({ lesson, course, fetchCompletedLessons, setCompletedLessons, allLessons = [], completedLessons = [], onNext, isSidebarOpen, onOpenSidebar }) => {
+  const isDone = completedLessons.map(String).includes(String(lesson?._id)); // ✅
+  const statusLabel = isDone ? "Completed" : "In Progress";
   const sortedContent = [...(lesson?.content ?? [])].sort((a, b) => a.order - b.order);
   const lessonIdx = allLessons.findIndex((l) => l._id === lesson?._id);
   const hasNext = lessonIdx >= 0 && lessonIdx < allLessons.length - 1;
-  const statusLabel = lesson?.isCompleted ? "Completed" : "In Progress";
 
-  // const videoBlock  = sortedContent.find((b)  => (b.mode || b.type) === "video");
-  // const otherBlocks = sortedContent.filter((b) => (b.mode || b.type) !== "video");
+  const handleComplete = async () => {
+    if (!lesson?._id) return;
+    const lessonIdStr = lesson._id.toString();
+    const alreadyDone = completedLessons.map(String).includes(lessonIdStr);
 
-  // if (lesson) {
-  //   console.log("=== LESSON CONTENT DEBUG ===");
-  //   console.log("full lesson object:", JSON.stringify(lesson, null, 2));
-  //   console.log("lesson.content:", lesson.content);
-  //   console.log("sortedContent:", sortedContent);
-  //   console.log("videoBlock:", videoBlock);
-  //   console.log("otherBlocks:", otherBlocks);
-  //   console.log("block keys sample:", lesson.content?.[0] ? Object.keys(lesson.content[0]) : "content is empty or undefined");
-  //   console.log("============================");
-  // }
+    const updatedLessons = alreadyDone
+      ? completedLessons.filter((id) => id.toString() !== lessonIdStr)
+      : [...completedLessons, lessonIdStr];
+
+    setCompletedLessons(updatedLessons);
+    try {
+      let res;
+      const lessons =
+        course.units
+          ?.flatMap((u) => u.chapters)
+          ?.flatMap((c) => c.lessons) ?? [];
+
+      const progress = lessons.length === 0 ? 0 : Math.round((updatedLessons.length / lessons.length) * 100);
+
+      // ✅ API toggle
+      if (alreadyDone) {
+        res = await API.post(`/course/remove-lesson`, {
+          courseId: course._id,
+          lessonId: lesson._id,
+          progress: progress
+        });
+      } else {
+        res = await API.post(`/course/complete-lesson`, {
+          courseId: course._id,
+          lessonId: lesson._id,
+          progress: progress
+        });
+      }
+      // await API.post(`/course/complete-lesson`, { courseId: course._id, lessonId: lesson._id, progress: progress });
+      await fetchCompletedLessons();
+      toast.success(res.data.message);
+      console.log(progress);
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Something went wrong");
+      setCompletedLessons(completedLessons);
+    }
+  };
+
+  useEffect(() => {
+    fetchCompletedLessons();
+  }, [lesson]);
+
 
   return (
     <main className="flex-1 flex flex-col h-full bg-white relative min-w-0">
@@ -142,7 +180,7 @@ const LessonContent = ({ lesson, courseTitle, allLessons = [], onNext, isSidebar
             </button>
           )}
           <h2 className="hidden md:block font-bold text-sm text-gray-400 truncate max-w-xs">
-            {courseTitle}
+            {course?.title}
           </h2>
         </div>
         <div className="flex items-center gap-3">
@@ -170,7 +208,6 @@ const LessonContent = ({ lesson, courseTitle, allLessons = [], onNext, isSidebar
           className="flex-1 overflow-y-auto p-6 md:p-12"
         >
           <div className="max-w-4xl mx-auto">
-
             {!lesson ? (
               <div className="flex flex-col items-center justify-center py-32 text-center">
                 <div className="w-20 h-20 bg-slate-100 rounded-3xl flex items-center justify-center mb-6">
@@ -181,19 +218,6 @@ const LessonContent = ({ lesson, courseTitle, allLessons = [], onNext, isSidebar
               </div>
             ) : (
               <>
-                {/* 1 — Video */}
-                {/* {videoBlock
-                  ? <VideoBlock block={videoBlock} />
-                  : (
-                    <div className="aspect-video bg-slate-900 rounded-3xl shadow-2xl mb-10 flex items-center justify-center relative overflow-hidden group cursor-pointer border-4 border-white shadow-slate-200">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 transition-all group-hover:scale-110 group-hover:bg-white/20 z-10">
-                        <FiPlay size={32} className="text-white ml-1" />
-                      </div>
-                    </div>
-                  )
-                } */}
-
                 {/* 2 — Title + meta */}
                 <div className="flex flex-col md:flex-row md:items-start justify-between mb-8 border-b border-gray-100 pb-8 gap-6">
                   <div>
@@ -209,8 +233,16 @@ const LessonContent = ({ lesson, courseTitle, allLessons = [], onNext, isSidebar
                     <button title="Download Resources" className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition active:scale-95">
                       <FiDownload size={20} />
                     </button>
-                    <button title="Community Discussion" className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition active:scale-95">
-                      <FiMessageSquare size={20} />
+
+                    <button
+                      onClick={handleComplete}
+                      title="Mark Complete"
+                      className={`p-3 rounded-xl transition active:scale-95 ${isDone ?
+                        "text-green-600 bg-green-100 hover:text-red-400 hover:bg-red-50" :
+                        "text-gray-600 bg-gray-100 hover:text-blue-600 hover:bg-blue-50"
+                        }`}
+                    >
+                      <FiCheckCircle size={20} />
                     </button>
                   </div>
                 </div>
@@ -235,14 +267,6 @@ const LessonContent = ({ lesson, courseTitle, allLessons = [], onNext, isSidebar
                           implementation details. Ensure you have your development environment ready before
                           proceeding with the code samples provided below the video.
                         </p>
-                        <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                          <h3 className="text-slate-900 font-bold mb-3">Key Takeaways</h3>
-                          <ul className="list-disc list-inside text-gray-600 space-y-1">
-                            <li>Understanding the "Why" behind this pattern</li>
-                            <li>Common pitfalls and how to avoid them</li>
-                            <li>Optimizing for production performance</li>
-                          </ul>
-                        </div>
                       </>
                     )
                   }

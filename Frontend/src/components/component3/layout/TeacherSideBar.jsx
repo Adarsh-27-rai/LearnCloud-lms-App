@@ -13,7 +13,7 @@ function TeachersSideBar() {
   const items = [
     { id: "dashboard", label: "Dashboard", icon: LuLayoutDashboard, path: "/teacherDashboard" },
     { id: "courses", label: "My Courses", icon: LuBookOpen, path: "/teacherDashboard/my-courses" },
-    { id: "timetable", label: "Timetable", icon: LuCalendarDays, path: "/teacherDashboard/timetable" },
+    // { id: "timetable", label: "Timetable", icon: LuCalendarDays, path: "/teacherDashboard/timetable" },
     { id: "assignments", label: "Assignments", icon: LuClipboardList, path: "/teacherDashboard/assignments" },
     { id: "students", label: "Students", icon: LuUsers, path: "/teacherDashboard/my-students" },
   ];
@@ -34,14 +34,7 @@ function TeachersSideBar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 min-h-[68px]">
-        <div className="shrink-0 w-9 h-9 rounded-xl bg-linear-to-br from-sky-500 to-teal-400 flex items-center justify-center shadow-lg shadow-sky-500/30">
-          <span
-            className="text-white font-black text-base"
-            style={{ fontFamily: "'Georgia', serif" }}
-          >
-            E
-          </span>
-        </div>
+        <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center shadow-xl shadow-blue-700/30 bg-[url('/src/assets/image.png')] bg-cover bg-no-repeat"></div>
 
         <AnimatePresence>
             <motion.span
@@ -49,10 +42,9 @@ function TeachersSideBar() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.15 }}
-              className="text-white font-black text-sm whitespace-nowrap tracking-tight"
-              style={{ fontFamily: "'Georgia', serif" }}
+              className="text-white font-bold text-xl"
             >
-              EduPortal
+              Learn<span className="text-blue-400">Cloud</span>
             </motion.span>
         </AnimatePresence>
       </div>
@@ -101,7 +93,7 @@ function TeachersSideBar() {
 
       {/* Logout */}
       <div className="px-2.5 pb-5">
-        <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full border border-transparent text-rose-400/50 hover:bg-rose-400/10 hover:border-rose-400/20 hover:text-rose-400 transition-all" onClick={handleLogout}>
+        <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full border border-transparent text-rose-400 hover:bg-rose-400/10 hover:border-rose-400/20 hover:text-rose-400 transition-all" onClick={handleLogout}>
           <span className="shrink-0 text-lg">
             <LuLogOut />
           </span>

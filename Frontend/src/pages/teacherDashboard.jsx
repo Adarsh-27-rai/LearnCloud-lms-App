@@ -7,7 +7,6 @@ import AddCourseModal from "../components/component3/courses/AddCourseModal";
 import API from "../api/axios";
 import AuthContext from "../context/authContext";
 import TeachersNavBar from "../components/component3/layout/TeachersNavBar";
-import TeacherCourseBuilderApp from "../components/component3/courseBuilder/coursePage";
 
 export default function TeacherDashboard() {
   const [modal, setModal] = useState(false);
@@ -69,7 +68,6 @@ export default function TeacherDashboard() {
                 </div>
               } />
 
-              <Route path="/my-courses/coursePage/:courseId" element={<TeacherCourseBuilderApp />} />
             </Routes>
         </main>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FiArrowLeft, FiX, FiPlay, FiCode, FiFileText, FiImage, FiCheckCircle } from "react-icons/fi";
 
@@ -13,8 +13,8 @@ const TYPE_ICON = { video: FiPlay, code: FiCode, text: FiFileText, images: FiIma
  *  onClose         — () => void
  */
 
-const LessonSidebar = ({ course, currentLessonId, onClose }) => {
-  const courseId    = course?._id ?? course?.id;
+const LessonSidebar = ({ course, currentLessonId, completedLessons = [], fetchCompletedLessons, onClose }) => {
+  const courseId = course?._id ?? course?.id;
   const sortedUnits = [...(course?.units ?? [])].sort((a, b) => a.order - b.order);
 
   return (
@@ -23,7 +23,7 @@ const LessonSidebar = ({ course, currentLessonId, onClose }) => {
       {/* Header */}
       <div className="h-16 px-5 border-b border-gray-800 bg-black flex justify-between items-center">
         <Link
-          to={`/course/${courseId}`}
+          to={`/studentDashboard/courses/${courseId}`}
           className="text-white hover:text-blue-400 transition flex items-center gap-2"
         >
           <FiArrowLeft size={16} />
@@ -56,6 +56,9 @@ const LessonSidebar = ({ course, currentLessonId, onClose }) => {
                         const lid = lesson._id ?? lesson.id;
                         const isActive = String(lid) === String(currentLessonId);
                         const Icon = TYPE_ICON[lesson.type] ?? FiPlay;
+                        useEffect(() => {
+                          fetchCompletedLessons();
+                        }, [lesson]);
                         return (
                           <Link
                             key={lid}
@@ -68,14 +71,10 @@ const LessonSidebar = ({ course, currentLessonId, onClose }) => {
                           >
                             <Icon size={12} className={isActive ? "text-white" : "text-green-400"} />
                             <span className="truncate font-medium flex-1">{lesson.title}</span>
-                            {lesson.isCompleted && !isActive && (
-                              <FiCheckCircle size={13} className="shrink-0 text-green-400" />
-                            )}
-                            {/* {lesson.duration && (
-                              <span className={`text-[10px] shrink-0 ${isActive ? "text-blue-200" : "text-gray-500"}`}>
-                                {lesson.duration}
-                              </span>
-                            )} */}
+                            {completedLessons.some((id) => id.toString() === lesson._id) ? !isActive ?
+                              <FiCheckCircle size={13} className="shrink-0 text-green-400" /> : <FiCheckCircle size={13} className="shrink-0 text-white" />
+                              :
+                              " "}
                           </Link>
                         );
                       })}

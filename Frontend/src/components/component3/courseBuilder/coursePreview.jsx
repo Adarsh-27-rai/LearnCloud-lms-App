@@ -53,12 +53,6 @@ function BlockPreview({ block }) {
     <div className="rounded-xl overflow-hidden border border-stone-100 shadow-sm">
       <div className="aspect-video relative flex items-center justify-center">
         <div className="absolute opacity-80" />
-        {/* <a href={block.videoURL} target="_blank" rel="noopener noreferrer" className="relative z-10 flex flex-col items-center gap-2 group/p">
-          <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-xl group-hover/p:scale-110 transition-transform duration-200">
-            <span className="text-2xl ml-1" style={{ color: "#f59e0b" }}>▶</span>
-          </div>
-          <span className="text-white/50 text-xs tracking-wide">Open Video</span>
-        </a> */}
         <iframe src={getEmbedURL(block.videoURL)} className="w-full h-full" allowFullScreen title={block.caption || "Lesson video"} />
       </div>
       {block.caption && <p className="text-center text-[11px] text-stone-400 italic py-2 px-4 bg-stone-50">{block.caption}</p>}
@@ -85,7 +79,7 @@ function PreviewSidebar({ course, activeLesson, onSelectLesson }) {
   const totalLessons = course.units.flatMap(u => u.chapters.flatMap(c => c.lessons)).length;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="h-screen flex flex-col overflow-scroll">
       {/* Stats bar */}
       <div className="flex gap-4 px-5 py-3 border-b border-stone-100 shrink-0">
         {[
@@ -242,7 +236,7 @@ export default function CoursePreview({ course, onEdit, onBack }) {
           </aside>
 
           {/* Main content */}
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 h-screen overflow-y-auto">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${activeLesson?.unitId}-${activeLesson?.chapterId}-${activeLesson?.lessonIdx}`}

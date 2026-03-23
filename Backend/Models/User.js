@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String,
         default: "Student",
-        enum: ["Teacher","Student","Admin"]
+        enum: ["Teacher", "Student", "Admin"]
     },
     password: {
         type: String,
@@ -29,6 +29,20 @@ const UserSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Course",
+        }
+    ],
+    courseProgress: [
+        {
+            courseId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Course"
+            },
+            progress: {type: Number, default: 0},
+            completedLessons: [
+                {
+                    type: mongoose.Schema.Types.ObjectId
+                }
+            ]
         }
     ]
 })

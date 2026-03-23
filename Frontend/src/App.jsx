@@ -8,10 +8,12 @@ import Navbar from './components/navbar'
 import ProtectedRoute from './components/protectedRoute'
 import { Routes, Route } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { Toaster } from "react-hot-toast";
 import AuthContext from "./context/authContext"
 import API from './api/axios'
 import CoursesApp from './components/component2/courses'
 import LessonPlayer from './components/component2/lessonPlayer'
+import TeacherCourseBuilderApp from "./components/component3/courseBuilder/coursePage"
 
 function App() {
   const [role, setRole] = useState("");
@@ -63,6 +65,8 @@ function App() {
     <>
       {/* <Home /> */}
       <AuthContext.Provider value={{ fetchRole, role, setRole, loading, enrolledCourses, setEnrolledCourses }}>
+        <Toaster position="top-right" />
+
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/signup' element={<><Navbar /><Signup /></>} />
@@ -73,6 +77,7 @@ function App() {
           <Route path='/teacherDashboard/*' element={<ProtectedRoute role={role} allowedRole="Teacher"><TeacherDashBoard /></ProtectedRoute>} />
           <Route path='/studentDashboard/courses/:courseId' element={<ProtectedRoute role={role} allowedRole="Student"><CoursesApp courses={courses} setCourses={setCourses} fetchCourse={fetchCourse}/></ProtectedRoute>} />
           <Route path='/studentDashboard/courses/:courseId/lesson/:lessonId' element={<ProtectedRoute role={role} allowedRole="Student"><LessonPlayer courses={courses} setCourses={setCourses} fetchCourse={fetchCourse}/></ProtectedRoute>} />
+          <Route path="/teacherDashboard/my-courses/coursePage/:courseId" element={<ProtectedRoute role={role} allowedRole="Teacher"><TeacherCourseBuilderApp /></ProtectedRoute>} />
 
         </Routes>
       </AuthContext.Provider>

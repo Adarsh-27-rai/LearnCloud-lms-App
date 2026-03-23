@@ -5,19 +5,21 @@ import { motion, AnimatePresence } from "framer-motion";
 // Constants
 // ════════════════════════════════════════════════════════════════
 const BLOCK_TYPES = [
-  { type: "text",   label: "Text",   icon: "¶",    color: "#3b82f6" },
-  { type: "code",   label: "Code",   icon: "</>",  color: "#10b981" },
-  { type: "images", label: "Image",  icon: "⊞",    color: "#ec4899" },
-  { type: "video",  label: "Video",  icon: "▶",    color: "#f59e0b" },
+  { type: "text", label: "Text", icon: "¶", color: "#3b82f6" },
+  { type: "code", label: "Code", icon: "</>", color: "#10b981" },
+  { type: "images", label: "Image", icon: "⊞", color: "#ec4899" },
+  { type: "video", label: "Video", icon: "▶", color: "#f59e0b" },
 ];
 
 const GRADIENTS = [
   "from-sky-500 to-cyan-400",
-  "from-violet-500 to-purple-400",
-  "from-rose-500 to-pink-400",
+  "from-teal-500 to-emerald-400",
+  "from-blue-500 to-sky-400",
+  "from-indigo-500 to-blue-400",
   "from-emerald-500 to-teal-400",
-  "from-orange-500 to-amber-400",
-  "from-slate-600 to-slate-500",
+  "from-amber-500 to-yellow-400",
+  "from-slate-600 to-slate-400",
+  "from-orange-500 to-rose-400"
 ];
 
 // ════════════════════════════════════════════════════════════════
@@ -130,7 +132,7 @@ function BlockEditor({ block, onChange, onRemove, onMoveUp, onMoveDown, isFirst,
 
         {block.type === "text" && (
           <textarea
-            className="w-full text-stone-700 text-sm px-4 py-3 outline-none resize-none min-h-[100px] placeholder-stone-300 leading-relaxed"
+            className="w-full text-stone-700 text-sm px-4 py-3 outline-none resize-none min-h-40 placeholder-stone-300 leading-relaxed"
             style={{ fontFamily: "'Lora',Georgia,serif" }}
             placeholder="Write content…"
             value={block.value || ""}
@@ -239,7 +241,7 @@ function LessonEditor({ lesson, onChange }) {
   };
 
   return (
-    <div>
+    <div className="h-[80vh] relative overflow-scroll pr-16">
       {/* Lesson meta */}
       <div className="grid grid-cols-3 gap-3 mb-5 pb-5 border-b border-stone-100">
         <input
@@ -306,6 +308,22 @@ function LessonEditor({ lesson, onChange }) {
           </button>
         ))}
       </div>
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-stone-700 my-4">
+        <h3 className="font-bold text-stone-800 mb-2">How to Write in TEXT block</h3>
+
+        <p className="mb-2">
+          Use simple symbols to format your notes.
+        </p>
+
+        <ul className="list-disc pl-5 space-y-1">
+          <li>
+            <strong>##</strong> at the beginning of a line creates a <strong>heading</strong>.
+          </li>
+          <li>
+            <strong>-</strong> at the beginning of a line creates a <strong>bullet point</strong>.
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }
@@ -344,11 +362,11 @@ function EditorSidebar({ course, activeLesson, onSelectLesson, onCourseChange })
       units: course.units.map((u) =>
         u._lid === ulid
           ? {
-              ...u,
-              chapters: u.chapters.map((c) =>
-                c._lid === clid ? { ...c, ...v } : c
-              ),
-            }
+            ...u,
+            chapters: u.chapters.map((c) =>
+              c._lid === clid ? { ...c, ...v } : c
+            ),
+          }
           : u
       ),
     });
@@ -386,13 +404,13 @@ function EditorSidebar({ course, activeLesson, onSelectLesson, onCourseChange })
       units: course.units.map((u) =>
         u._lid === ulid
           ? {
-              ...u,
-              chapters: u.chapters.map((c) =>
-                c._lid === clid
-                  ? { ...c, lessons: [...c.lessons, l] }
-                  : c
-              ),
-            }
+            ...u,
+            chapters: u.chapters.map((c) =>
+              c._lid === clid
+                ? { ...c, lessons: [...c.lessons, l] }
+                : c
+            ),
+          }
           : u
       ),
     });
@@ -404,18 +422,18 @@ function EditorSidebar({ course, activeLesson, onSelectLesson, onCourseChange })
       units: course.units.map((u) =>
         u._lid === ulid
           ? {
-              ...u,
-              chapters: u.chapters.map((c) =>
-                c._lid === clid
-                  ? {
-                      ...c,
-                      lessons: c.lessons
-                        .filter((_, j) => j !== li)
-                        .map((l, j) => ({ ...l, order: j + 1 })),
-                    }
-                  : c
-              ),
-            }
+            ...u,
+            chapters: u.chapters.map((c) =>
+              c._lid === clid
+                ? {
+                  ...c,
+                  lessons: c.lessons
+                    .filter((_, j) => j !== li)
+                    .map((l, j) => ({ ...l, order: j + 1 })),
+                }
+                : c
+            ),
+          }
           : u
       ),
     });
@@ -428,7 +446,7 @@ function EditorSidebar({ course, activeLesson, onSelectLesson, onCourseChange })
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-[94vh] overflow-scroll">
       <div className="px-4 py-3 border-b border-stone-100">
         <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
           Course Structure
@@ -445,9 +463,8 @@ function EditorSidebar({ course, activeLesson, onSelectLesson, onCourseChange })
             >
               {/* Unit header */}
               <div
-                className={`flex items-center gap-1 px-4 py-2.5 group hover:bg-stone-50 transition-colors ${
-                  openUnits[unit._lid] ? "bg-stone-50/60" : ""
-                }`}
+                className={`flex items-center gap-1 px-4 py-2.5 group hover:bg-stone-50 transition-colors ${openUnits[unit._lid] ? "bg-stone-50/60" : ""
+                  }`}
               >
                 <button
                   onClick={() =>
@@ -580,19 +597,17 @@ function EditorSidebar({ course, activeLesson, onSelectLesson, onCourseChange })
                                       lessonIdx: li,
                                     })
                                   }
-                                  className={`flex items-center gap-2 pl-16 pr-4 py-2.5 cursor-pointer transition-all border-r-2 group/l ${
-                                    isActive
+                                  className={`flex items-center gap-2 pl-16 pr-4 py-2.5 cursor-pointer transition-all border-r-2 group/l ${isActive
                                       ? "bg-amber-50 border-amber-400"
                                       : "hover:bg-stone-50/80 border-transparent"
-                                  }`}
+                                    }`}
                                 >
                                   <div className="flex-1 min-w-0">
                                     <div
-                                      className={`text-xs truncate ${
-                                        isActive
+                                      className={`text-xs truncate ${isActive
                                           ? "font-bold text-amber-700"
                                           : "text-stone-500 font-medium"
-                                      }`}
+                                        }`}
                                     >
                                       {lesson.title || (
                                         <em className="text-stone-300 font-normal">
@@ -711,9 +726,9 @@ export default function CourseEditor({ course: initialCourse, onSave, onPreview,
 
   const activeLessonObj = activeLesson
     ? course.units
-        .find((u) => u._lid === activeLesson.unitLid)
-        ?.chapters.find((c) => c._lid === activeLesson.chapterLid)
-        ?.lessons[activeLesson.lessonIdx]
+      .find((u) => u._lid === activeLesson.unitLid)
+      ?.chapters.find((c) => c._lid === activeLesson.chapterLid)
+      ?.lessons[activeLesson.lessonIdx]
     : null;
 
   const handleLessonChange = (v) => {
@@ -724,18 +739,18 @@ export default function CourseEditor({ course: initialCourse, onSave, onPreview,
         u._lid !== activeLesson.unitLid
           ? u
           : {
-              ...u,
-              chapters: u.chapters.map((ch) =>
-                ch._lid !== activeLesson.chapterLid
-                  ? ch
-                  : {
-                      ...ch,
-                      lessons: ch.lessons.map((l, j) =>
-                        j === activeLesson.lessonIdx ? { ...l, ...v } : l
-                      ),
-                    }
-              ),
-            }
+            ...u,
+            chapters: u.chapters.map((ch) =>
+              ch._lid !== activeLesson.chapterLid
+                ? ch
+                : {
+                  ...ch,
+                  lessons: ch.lessons.map((l, j) =>
+                    j === activeLesson.lessonIdx ? { ...l, ...v } : l
+                  ),
+                }
+            ),
+          }
       ),
     }));
   };
@@ -813,47 +828,30 @@ export default function CourseEditor({ course: initialCourse, onSave, onPreview,
           </button>
         </header>
 
-        {/* ── Hero Banner ── */}
-        <div
-          className={`relative bg-gradient-to-br ${course.backgroundColor || "from-stone-700 to-stone-600"} px-8 pt-6 pb-6 shrink-0 overflow-hidden`}
-        >
-          <div className="absolute inset-0 opacity-20" style={{
-            backgroundImage: "radial-gradient(circle at 80% 50%, white 1px, transparent 1px)",
-            backgroundSize: "32px 32px"
-          }} />
-          <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-white/10" />
-          <div className="absolute top-5 right-8 w-12 h-12 rounded-full bg-white/10" />
 
-          <div className="max-w-4xl space-y-2 relative z-10">
-            <div className="flex gap-3">
-              <input
-                className="flex-1 bg-black/20 backdrop-blur border border-white/20 rounded-lg px-3 py-1.5 text-white placeholder-white/40 text-2xl font-black outline-none focus:bg-black/30 transition-all"
-                style={{ fontFamily: "Lora, Georgia, serif" }}
-                placeholder="Course title *"
-                value={course.title}
-                onChange={(e) => handleCourseChange({ title: e.target.value })}
-              />
-              <input
-                className="w-40 bg-black/20 backdrop-blur border border-white/20 rounded-lg px-3 py-1.5 text-white/80 placeholder-white/40 text-xs font-bold outline-none focus:bg-black/30 transition-all"
-                placeholder="Tag e.g. Engineering"
-                value={course.subjectTag || ""}
-                onChange={(e) => handleCourseChange({ subjectTag: e.target.value })}
-              />
-            </div>
-            <textarea
-              className="w-full bg-black/20 backdrop-blur border border-white/20 rounded-lg px-3 py-1.5 text-white/70 placeholder-white/30 text-sm outline-none focus:bg-black/30 transition-all resize-none"
-              placeholder="Course description…"
-              rows={2}
-              value={course.description || ""}
-              onChange={(e) => handleCourseChange({ description: e.target.value })}
+        <div className={`relative bg-linear-to-br ${course.backgroundColor} px-8 pt-8 pb-7 shrink-0 overflow-hidden`}>
+          <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-white/10" />
+          <div className="absolute bottom-0 right-24 w-24 h-24 rounded-full bg-white/8" />
+          <div className="absolute top-5 right-8 w-12 h-12 rounded-full bg-white/10" />
+          <div className="max-w-4xl">
+            <h1 className="text-white font-black text-3xl leading-tight mb-2" style={{ fontFamily: "Georgia,serif" }}>{course.title}</h1>
+            <p className="text-white/75 text-sm max-w-2xl line-clamp-2">{course.description}</p>
+
+            <span className="text-white/90 text-sm mt-4">SubjectTag:</span> {"  "}
+            <input
+              className="w-40 bg-black/20 backdrop-blur border border-white/20 rounded-lg px-3 py-1.5 text-white/80 placeholder-white/40 text-xs font-bold outline-none focus:bg-black/30 transition-all mt-4"
+              placeholder="Tag e.g. Engineering"
+              value={course.subjectTag || ""}
+              onChange={(e) => handleCourseChange({ subjectTag: e.target.value })}
             />
-            <div className="flex gap-3 items-center">
-              <span className="text-white/50 text-xs font-semibold">Theme:</span>
+
+            <div className="flex gap-3 items-center mt-4">
+              <span className="text-white text-xs font-semibold">Theme:</span>
               {GRADIENTS.map((g) => (
                 <button
                   key={g}
                   onClick={() => handleCourseChange({ backgroundColor: g })}
-                  className={`w-6 h-6 rounded-full bg-gradient-to-br ${g} border-2 transition-all`}
+                  className={`w-6 h-6 rounded-full bg-linear-to-br ${g} border-2 transition-all`}
                   style={{
                     borderColor:
                       course.backgroundColor === g ? "white" : "rgba(255,255,255,0.25)",
@@ -864,6 +862,8 @@ export default function CourseEditor({ course: initialCourse, onSave, onPreview,
             </div>
           </div>
         </div>
+
+
 
         {/* ── Body ── */}
         <div

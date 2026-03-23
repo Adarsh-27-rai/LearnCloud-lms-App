@@ -2,6 +2,7 @@ import { useState, useMemo, useContext, useEffect } from 'react';
 import API from '../../api/axios';
 import AuthContext from '../../context/authContext';
 import { BookOpen, Users, Clock, Star, ArrowRight, Search, CheckCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 const AllCourses = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,12 +29,11 @@ const AllCourses = () => {
 
       if (response.data.success) {
         setEnrolledCourses(response.data.enrolledCourses);
-        console.log("Enrollment confirmed");
+        toast.success("Enrollment confirmed");
       }
     } catch (error) {
-      const errorMsg =
-        error.response?.data?.message || "Enrollment failed";
-      alert(errorMsg);
+      const errorMsg = error.response?.data?.message || "Enrollment failed";
+      toast.error(errorMsg);
     }
   };
 
@@ -73,7 +73,6 @@ const AllCourses = () => {
       {filteredCourses.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourses.map((course) => {
-            // const isEnrolled = enrolledCourses.includes(course._id.toString());
             const enrolledMatch = enrolledCourses.find(id => id.toString() === course._id.toString());
             const isEnrolled = (enrolledMatch) ? true : false;
 

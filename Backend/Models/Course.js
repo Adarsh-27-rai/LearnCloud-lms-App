@@ -15,7 +15,7 @@ const LessonSchema = new mongoose.Schema({
   order: { type: Number, required: true },
   title: {type: String, required: true},
   type: {type: String, enum: ["video", "code", "text", "images"], default: "text" },
-  isCompleted: {type: Boolean, default: false},
+  // isCompleted: {type: Boolean, default: false},
   duration: String,
   content: [ContentSchema],
 });
@@ -37,7 +37,7 @@ const CourseSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: String,
   backgroundColor: String,
-  progess: {type: Number, default: 0},
+  progress: {type: Number, default: 0},
   instructor: { 
       type: mongoose.Schema.Types.ObjectId, 
       ref: "User", 

@@ -5,7 +5,7 @@ import { LogOut } from "lucide-react";
 const navItems = [
     { label: "Dashboard",   emoji: "📊", path: "/studentDashboard",             end: true },
     { label: "All Courses", emoji: "🌐", path: "/studentDashboard/all-courses", end: false },
-    { label: "Time Table",  emoji: "📝", path: "/studentDashboard/timetable",   end: false },
+    // { label: "Time Table",  emoji: "📝", path: "/studentDashboard/timetable",   end: false },
     { label: "Queries",     emoji: "⚙️", path: "/studentDashboard/queries",     end: false },
 ];
 
