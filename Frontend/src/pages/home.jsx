@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import Navbar from "../components/navbar";
-import FeatureCard from "../components/FeatureCard";
+import FeatureCard from "../components/featureCard";
 import Footer from "../components/footer";
 import { Link } from "react-router-dom";
 
