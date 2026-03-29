@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from 'react';
-import API from '../api/axios'
+import API from '../api/axios';
+import toast from "react-hot-toast";
 
 function Signup() {
   const navigate = useNavigate();
@@ -9,14 +10,23 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   async function signup() {
     try {
+      if(name == "" || email == "" || password == "" || role == null) {
+        toast.error("Invalid Data Successful");
+        return;
+      }
+      setLoading(true);
       const res = await API.post("/auth/signup", { name, email, password, role });
-      // console.log(res.data)
+      if(res.data) toast.success("Sign-up Successful");
       navigate("/login");
     } catch (err) {
+      toast.error("Sign-up Failed");
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -57,8 +67,8 @@ function Signup() {
             <input type="text" placeholder="Full Name" className="w-full rounded-xl border px-4 py-2.5" onChange={(e) => setName(e.target.value)} />
             <input type="email" placeholder="Email" className="w-full rounded-xl border px-4 py-2.5" onChange={(e) => setEmail(e.target.value)} />
             <input type="password" placeholder="Password" className="w-full rounded-xl border px-4 py-2.5" onChange={(e) => setPassword(e.target.value)} />
-            <button type="submit" className="w-full px-6 py-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700" onClick={signup}>
-              Sign Up
+            <button type="submit" disabled={loading} className="w-full px-6 py-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700" onClick={signup}>
+               {loading ? "Creating..." : "Sign Up"}
             </button>
           </form>
 

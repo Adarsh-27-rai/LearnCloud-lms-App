@@ -6,8 +6,8 @@ import toast from "react-hot-toast";
 
 const AllCourses = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  // const [enrolledCourses, enrolledCourses] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { enrolledCourses, setEnrolledCourses } = useContext(AuthContext);
 
@@ -40,6 +40,7 @@ const AllCourses = () => {
   const fetchCourse = async () => {
     const cor = await API.get("/course");
     setCourses(cor.data);
+    setLoading(false);
     console.log(courses);
   }
 
@@ -142,7 +143,7 @@ const AllCourses = () => {
         </div>
       ) : (
         <div className="text-center py-20">
-          <p className="text-slate-500 text-lg">No courses found matching "{searchQuery}"</p>
+          {loading ? <p>loading...</p> : <p className="text-slate-500 text-lg">No courses found matching "{searchQuery}"</p>}
         </div>
       )}
     </div>

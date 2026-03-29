@@ -5,7 +5,7 @@ function Navbar() {
     <nav className="sticky top-0 z-50 backdrop-blur bg-white/80 border-b border-white/40">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src="src/assets/Screenshot 2026-01-16 112749.png" alt="logo" className='h-10 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.1)]'/>
+          <img src="/Screenshot 2026-01-16 112749.png" alt="logo" className='h-10 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.1)]'/>
           <div className="text-xl font-bold tracking-tight text-gray-900">
             Learn<span className="text-indigo-600">Cloud</span>
           </div>

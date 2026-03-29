@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import API from "../api/axios";
 import { useState, useContext } from 'react';
 import AuthContext from "../context/authContext";
+import toast from 'react-hot-toast';
 
 function Login() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function Login() {
     try {
       const res = await API.post("/auth/login", { email, password });
       const { token, role } = res.data;
-
+      if(token) toast.success("Login Successfull");
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
       setRole(role);
@@ -30,6 +31,7 @@ function Login() {
       }
 
     } catch (err) {
+      toast.error("Login Failed");
       console.log(err);
     }
   }

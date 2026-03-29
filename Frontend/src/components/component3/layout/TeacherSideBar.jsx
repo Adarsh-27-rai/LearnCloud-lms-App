@@ -34,7 +34,7 @@ function TeachersSideBar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 min-h-[68px]">
-        <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center shadow-xl shadow-blue-700/30 bg-[url('/src/assets/image.png')] bg-cover bg-no-repeat"></div>
+        <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center shadow-xl shadow-blue-700/30 bg-[url('/image.png')] bg-cover bg-no-repeat"></div>
 
         <AnimatePresence>
             <motion.span
