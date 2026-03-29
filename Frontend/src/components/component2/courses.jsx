@@ -11,11 +11,14 @@ const CourseStructure = ({ courses, setCourses, fetchCourse }) => {
   const { courseId } = useParams();
   const [course, setCourse] = useState(null);
   const [completedLesson, setCompletedLessons] = useState([]);
+  const [laoding, setLoading] = useState(true);
+
 
   const fetchCompletedLessons = async () => {
     if (!courseId) return;
     const res = await API.get(`/course/progress/${courseId}`);
     setCompletedLessons(res.data || []);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -33,6 +36,9 @@ const CourseStructure = ({ courses, setCourses, fetchCourse }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 pb-20">
+      {!course ? <><p className="h-screen w-full text-5xl font-bold text-slate-600 flex justify-center items-center">Loading....</p></>
+      :
+      <>
       <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-310 mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/studentDashboard" className="flex items-center gap-2 text-gray-500 hover:text-slate-900 transition">
@@ -103,6 +109,7 @@ const CourseStructure = ({ courses, setCourses, fetchCourse }) => {
           ))}
         </div>
       </main>
+    </>}
     </div>
   );
 };

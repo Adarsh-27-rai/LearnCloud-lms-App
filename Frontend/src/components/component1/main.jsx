@@ -20,6 +20,9 @@ const main = () => {
     const [completedCount, setCompletedCount] = useState(0);
     const [inProgressCount, setInProgressCount] = useState(0);
     const [performance, setPerformance] = useState(0);
+    const [loading, setLoading] = useState(true);
+
+
 
     const fetchCourse = async () => {
         const cor = await API.get("/course/my-courses");
@@ -33,17 +36,18 @@ const main = () => {
         let totalPerformance = 0;
         progressData.forEach((c) => {
             totalPerformance += c.progress;
-            if(c.progress === 100) {
+            if (c.progress === 100) {
                 completed++;
             } else {
                 inProgress++;
             }
         });
 
-        setPerformance((totalPerformance/progressData.length));
+        setPerformance((totalPerformance / progressData.length));
         console.log(performance);
-        setCompletedCount(completed);      
-        setInProgressCount(inProgress);   
+        setCompletedCount(completed);
+        setInProgressCount(inProgress);
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -98,8 +102,9 @@ const main = () => {
                 <section className="h-[65%] overflow-y-auto">
                     <h3 className="mx-4 text-2xl font-semibold mb-4">Continue Learning</h3>
                     <div className="flex justify-start items-center flex-wrap gap-12 my-5">
-
-                        {course.map((item, i) => {
+                        {loading ? <p className="text-3xl text-slate-400 font-semibold p-5 text-center h-100 w-full">Loading....</p> 
+                        : 
+                        course.map((item, i) => {
                             const p = progress.find(p => p.courseId === item._id);
                             return <>
                                 <Link to={`/studentDashboard/courses/${item._id}`} key={i}>
