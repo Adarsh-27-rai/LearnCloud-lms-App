@@ -26,7 +26,7 @@ function Home() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
-            <img src="/src/assets/E-learning-animation-video.jpg" alt="Preview" className="rounded-3xl shadow-xl" />
+            <img src="/E-learning-animation-video.jpg" alt="Preview" className="rounded-3xl shadow-xl" />
           </motion.div>
         </div>
       </section>
