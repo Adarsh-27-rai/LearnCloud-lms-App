@@ -93,6 +93,18 @@ router.post("/enroll", authMiddleware, async (req, res) => {
     );
     if (!updatedUser) return res.status(404).json({ message: "User not found" });
 
+    // ── Add student to instructor's students array ──────────
+    await User.findByIdAndUpdate(course.instructor, {
+      $push: {
+        students: {
+          studentId: req.user,
+          name: updatedUser.name,
+          courseId,
+          progress: 0,
+        },
+      },
+    });
+
     res.status(200).json({
       success: true,
       message: "Enrolled successfully",

@@ -30,7 +30,7 @@ const TeachersNavBar = ({userName, userEmail}) => {
             MS
           </div>
           <div className="hidden sm:block">
-            <p className="text-sm font-bold text-slate-700 leading-tight">Mr. {userName}</p>
+            <p className="text-sm font-bold text-slate-700 leading-tight">{userName}</p>
             <p className="text-xs text-gray-400">{userEmail}</p>
           </div>
         </div>
