@@ -19,6 +19,9 @@ function App() {
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [userName, setUserName] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
+
 
   const fetchRole = async () => {
     try {
@@ -31,9 +34,10 @@ function App() {
       const res = await API.get("/auth/me");
       const userRole = res.data.role;
       setEnrolledCourses(res.data.enrolledCourses);
-      console.log()
-      console.log("hello", userRole)
-      setRole(userRole)
+      setUserName(res.data.name); // store full user name
+      setUserEmail(res.data.email); // store full user email
+      console.log("hello", userRole);
+      setRole(userRole);
     } catch (error) {
       console.log("error has occured", error);
     } finally {
@@ -74,7 +78,7 @@ function App() {
           {/* <Route path='/dashboard' element={role == "Student" ? <ProtectedRoute><DashBoard /></ProtectedRoute> : <ProtectedRoute><TeacherDashBoard /></ProtectedRoute>} /> */}
 
           <Route path='/studentDashboard/*' element={<ProtectedRoute role={role} allowedRole="Student"><DashBoard /></ProtectedRoute>} />
-          <Route path='/teacherDashboard/*' element={<ProtectedRoute role={role} allowedRole="Teacher"><TeacherDashBoard /></ProtectedRoute>} />
+          <Route path='/teacherDashboard/*' element={<ProtectedRoute role={role} allowedRole="Teacher"><TeacherDashBoard userName={userName} userEmail={userEmail}/></ProtectedRoute>} />
           <Route path='/studentDashboard/courses/:courseId' element={<ProtectedRoute role={role} allowedRole="Student"><CoursesApp courses={courses} setCourses={setCourses} fetchCourse={fetchCourse}/></ProtectedRoute>} />
           <Route path='/studentDashboard/courses/:courseId/lesson/:lessonId' element={<ProtectedRoute role={role} allowedRole="Student"><LessonPlayer courses={courses} setCourses={setCourses} fetchCourse={fetchCourse}/></ProtectedRoute>} />
           <Route path="/teacherDashboard/my-courses/coursePage/:courseId" element={<ProtectedRoute role={role} allowedRole="Teacher"><TeacherCourseBuilderApp /></ProtectedRoute>} />

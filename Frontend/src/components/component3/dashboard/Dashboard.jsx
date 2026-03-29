@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import AuthContext from "../../../context/authContext";
 import { useContext } from "react";
 
-function DashboardPage({ onOpen }) {
+function DashboardPage({ onOpen, userName }) {
 
   const previousCourse = [
     { id: 1, title: "Math 101",      description: "Fundamentals of algebra, geometry and calculus for beginners.", students: 28, lessons: 14, level: "Beginner",     subject: "Algebra",       palette: 0 },
@@ -14,6 +14,7 @@ function DashboardPage({ onOpen }) {
   ];
 
   const { allCourses } = useContext(AuthContext);
+  
 
   return (
     <div className="p-6">
@@ -22,7 +23,7 @@ function DashboardPage({ onOpen }) {
         className="mb-7"
       >
         <h2 className="text-2xl font-black text-slate-800" style={{ fontFamily: "'Georgia', serif" }}>
-          Good morning, Mr. Smith 👋
+          Good morning, {userName} 👋
         </h2>
         <p className="text-sm text-gray-400 mt-1.5">Here's your teaching overview for today.</p>
       </motion.div>

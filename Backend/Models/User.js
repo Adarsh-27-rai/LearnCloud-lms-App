@@ -34,8 +34,7 @@ const UserSchema = new mongoose.Schema({
     courseProgress: [
         {
             courseId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Course"
+                type: mongoose.Schema.Types.ObjectId, ref: "Course"
             },
             progress: {type: Number, default: 0},
             completedLessons: [
@@ -43,6 +42,18 @@ const UserSchema = new mongoose.Schema({
                     type: mongoose.Schema.Types.ObjectId
                 }
             ]
+        }
+    ],
+    students: [
+        {
+            studentId: { 
+                type: mongoose.Schema.Types.ObjectId, ref: "User", required: true 
+            },
+            name: { type: String, required: true },
+            courseId: { 
+                type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true
+            },
+            progress: { type: Number, default: 0, min: 0, max: 100 }
         }
     ]
 })

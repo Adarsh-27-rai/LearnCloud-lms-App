@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@tailwindcss/vite": "^4.1.18",
     "axios": "^1.13.2",
+    "dotenv": "^17.3.1",
     "framer-motion": "^12.26.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.562.0",
@@ -20,7 +22,10 @@
     "react-hot-toast": "^2.6.0",
     "react-icon": "^1.0.0",
     "react-icons": "^5.5.0",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.12.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.1.18"
   },

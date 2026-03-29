@@ -10,30 +10,13 @@ const LessonPlayer = ({ courses, fetchCourse }) => {
   const [currentCourse, setCurrentCourse] = useState(null);
   const [currentLesson, setCurrentLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
-  const [progress, setProgress] = useState(0);
 
   // Step 1 — fetch and find the course
   useEffect(() => {
     fetchCourse();
   }, []);
 
-  // function CalculateProgress() {
-  //   if (!currentCourse) return;
-  //   const lessons = currentCourse.units
-  //     ?.flatMap((unit) => unit.chapters)
-  //     ?.flatMap((chapter) => chapter.lessons) ?? [];
-  //     const lessonCount = lessons.length;
-  //     const completedLessonCount = completedLessons.length;
-  //     if (lessonCount === 0) {
-  //       setProgress(0);
-  //       return;
-  //     }
-  //     const CourseProgress = (completedLessonCount/lessonCount) * 100;
-  //     setProgress(Math.round(CourseProgress));
-  //     return CourseProgress;
-  // }
-
-
+  
   // Step 2 — once course is set, find the lesson
   useEffect(() => {
     if (!currentCourse) return;

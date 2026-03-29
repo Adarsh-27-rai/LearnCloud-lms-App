@@ -13,7 +13,7 @@ function Signup() {
   async function signup() {
     try {
       const res = await API.post("/auth/signup", { name, email, password, role });
-      console.log(res.data)
+      // console.log(res.data)
       navigate("/login");
     } catch (err) {
       console.log(err);

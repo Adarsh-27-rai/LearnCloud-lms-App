@@ -7,11 +7,13 @@ import AddCourseModal from "../components/component3/courses/AddCourseModal";
 import API from "../api/axios";
 import AuthContext from "../context/authContext";
 import TeachersNavBar from "../components/component3/layout/TeachersNavBar";
+import Assignments from "../components/component3/Assignment/Assignment";
+// inside your teacher dashboard <Routes>:
+{/* <Route path="/teacherDashboard/assignments" element={<Assignments />} /> */}
 
-export default function TeacherDashboard() {
+export default function TeacherDashboard({userName, userEmail}) {
   const [modal, setModal] = useState(false);
   const [allCourses, setAllCourses] = useState([]);
-  // const [collapsed, setCollapsed] = useState(false); // If you still need to control sidebar width
 
   async function fetchCourse() {
     try {
@@ -36,31 +38,37 @@ export default function TeacherDashboard() {
               {/* index route displays for /teacherDashboard */}
               <Route index element={
                 <>
-                  <TeachersNavBar />
-                  <DashboardPage onOpen={() => setModal(true)} /> 
+                  <TeachersNavBar userName={userName} userEmail={userEmail}/>
+                  <DashboardPage onOpen={() => setModal(true)} userName={userName}/> 
                 </>
               } />
               
               {/* path matches the 'to' prop in your sidebar NavLinks */}
               <Route path="/my-courses" element={
                 <>
-                  <TeachersNavBar />
+                  <TeachersNavBar userName={userName} userEmail={userEmail}/>
                   <MyCoursesPage onOpen={() => setModal(true)} /> 
                 </>
               } />
                 
               {/* Generic fallback for routes like 'timetable' or 'students' */}
-              <Route path="/timetable" element={
+              {/* <Route path="/timetable" element={
                 <div className="bg-white rounded-2xl p-10 text-gray-400">
                   Coming Soon...
                 </div>
-              } />
+              } /> */}
 
-              <Route path="/assignments" element={
+              {/* <Route path="/assignments" element={
                 <div className="bg-white rounded-2xl p-10 text-gray-400">
                   Coming Soon...
                 </div>
-              } />
+              } /> */}
+              <Route path="/assignments" element={
+                <>
+                  <TeachersNavBar userName={userName} userEmail={userEmail}/>
+                  <Assignments />
+                </>   
+              }/>
 
               <Route path="/my-students" element={
                 <div className="bg-white rounded-2xl p-10 text-gray-400">

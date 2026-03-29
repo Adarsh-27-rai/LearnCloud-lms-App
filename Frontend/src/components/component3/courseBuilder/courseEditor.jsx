@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AssignmentBlockEditor } from "../Assignment/AssignmentBlock";
 
 // ════════════════════════════════════════════════════════════════
 // Constants
@@ -9,6 +10,7 @@ const BLOCK_TYPES = [
   { type: "code", label: "Code", icon: "</>", color: "#10b981" },
   { type: "images", label: "Image", icon: "⊞", color: "#ec4899" },
   { type: "video", label: "Video", icon: "▶", color: "#f59e0b" },
+  { type: "assignment", label: "Assignment", icon: "◈", color: "#8b5cf6" },
 ];
 
 const GRADIENTS = [
@@ -37,6 +39,7 @@ const makeContent = (type, order) => ({
   videoURL: "",
   imageURL: "",
   caption: "",
+  assignmentId: null,
 });
 
 const makeLesson = (order) => ({
@@ -205,6 +208,10 @@ function BlockEditor({ block, onChange, onRemove, onMoveUp, onMoveDown, isFirst,
             />
           </div>
         )}
+
+        {block.type === "assignment" && (
+          <AssignmentBlockEditor block={block} onChange={onChange} />
+        )}
       </div>
     </div>
   );
@@ -242,6 +249,7 @@ function LessonEditor({ lesson, onChange }) {
 
   return (
     <div className="h-[80vh] relative overflow-scroll pr-16">
+      
       {/* Lesson meta */}
       <div className="grid grid-cols-3 gap-3 mb-5 pb-5 border-b border-stone-100">
         <input
@@ -257,7 +265,9 @@ function LessonEditor({ lesson, onChange }) {
           onChange={(e) => onChange({ duration: e.target.value })}
         />
       </div>
-
+      <div className="bg-purple-100 border border-purple-300 rounded-xl p-4 text-sm text-stone-700 my-4">
+        <h3 className="font-semibold text-stone-800">Add Content by Selecting Add Blocks</h3>
+      </div>
       {/* Content blocks */}
       <div className="space-y-4">
         {content.length === 0 && (
@@ -307,6 +317,9 @@ function LessonEditor({ lesson, onChange }) {
             {bt.icon} {bt.label}
           </button>
         ))}
+      </div>
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-stone-700 my-4">
+        <h3 className="font-semibold text-stone-800">You can create only one assignment per Lesson</h3>
       </div>
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-stone-700 my-4">
         <h3 className="font-bold text-stone-800 mb-2">How to Write in TEXT block</h3>
@@ -473,7 +486,7 @@ function EditorSidebar({ course, activeLesson, onSelectLesson, onCourseChange })
                   className="flex items-center gap-2 flex-1 min-w-0 text-left"
                 >
                   <span
-                    className="text-[10px] text-stone-300 w-3 shrink-0 inline-block transition-transform duration-150"
+                    className="text-2xs text-black w-3 shrink-0 inline-block transition-transform duration-150"
                     style={{ transform: openUnits[unit._lid] ? "rotate(90deg)" : "none" }}
                   >▸</span>
                   <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest shrink-0">
@@ -487,12 +500,12 @@ function EditorSidebar({ course, activeLesson, onSelectLesson, onCourseChange })
                   <button
                     title="Add chapter"
                     onClick={() => addChapter(unit._lid)}
-                    className="w-5 h-5 rounded text-stone-400 hover:text-violet-600 hover:bg-violet-50 flex items-center justify-center text-xs transition-all"
+                    className="w-5 h-5 rounded text-stone-800 hover:text-violet-600 hover:bg-violet-50 flex items-center justify-center text-xs transition-all"
                   >+</button>
                   <button
                     title="Delete unit"
                     onClick={() => deleteUnit(unit._lid)}
-                    className="w-5 h-5 rounded text-stone-300 hover:text-red-500 hover:bg-red-50 flex items-center justify-center text-sm transition-all"
+                    className="w-5 h-5 rounded text-stone-800 hover:text-red-500 hover:bg-red-50 flex items-center justify-center text-sm transition-all"
                   >×</button>
                 </div>
               </div>
@@ -532,7 +545,7 @@ function EditorSidebar({ course, activeLesson, onSelectLesson, onCourseChange })
                           className="flex items-center gap-1.5 flex-1 min-w-0 text-left"
                         >
                           <span
-                            className="text-[10px] text-stone-200 w-3 shrink-0 inline-block transition-transform duration-150"
+                            className="text-2xs text-black w-3 shrink-0 inline-block transition-transform duration-150"
                             style={{ transform: openChapters[ch._lid] ? "rotate(90deg)" : "none" }}
                           >▸</span>
                           <span className="text-[10px] font-black text-violet-400 uppercase tracking-widest shrink-0">

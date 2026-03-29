@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AssignmentBlockPreview } from "../Assignment/AssignmentBlock";
 
 // ════════════════════════════════════════════════════════════════
 // Block Preview
@@ -59,6 +60,8 @@ function BlockPreview({ block }) {
     </div>
   );
 
+  if (block.type === "assignment") return <AssignmentBlockPreview block={block} />;
+
   return null;
 }
 
@@ -102,7 +105,7 @@ function PreviewSidebar({ course, activeLesson, onSelectLesson }) {
               className={`flex items-center gap-1 px-4 py-2.5 hover:bg-stone-50 transition-colors cursor-pointer ${openUnits[unit._id] ? "bg-stone-50/60" : ""}`}
               onClick={() => setOpenUnits(s => ({ ...s, [unit._id]: !s[unit._id] }))}
             >
-              <span className="text-[10px] text-stone-300 w-3 shrink-0 transition-transform duration-150 inline-block" style={{ transform: openUnits[unit._id] ? "rotate(90deg)" : "none" }}>▸</span>
+              <span className="text-sm text-black w-3 shrink-0 transition-transform duration-150 inline-block" style={{ transform: openUnits[unit._id] ? "rotate(90deg)" : "none" }}>▸</span>
               <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest shrink-0">U{ui + 1}</span>
               <span className="text-xs font-bold text-stone-700 truncate">{unit.title || <em className="text-stone-300 font-normal">Untitled</em>}</span>
             </div>
@@ -115,7 +118,7 @@ function PreviewSidebar({ course, activeLesson, onSelectLesson }) {
                     className="flex items-center gap-1 pl-9 pr-4 py-2 hover:bg-stone-50 transition-colors cursor-pointer"
                     onClick={() => setOpenChapters(s => ({ ...s, [ch._id]: !s[ch._id] }))}
                   >
-                    <span className="text-[10px] text-stone-200 w-3 shrink-0 inline-block transition-transform duration-150" style={{ transform: openChapters[ch._id] ? "rotate(90deg)" : "none" }}>▸</span>
+                    <span className="text-[10px] text-black w-3 shrink-0 inline-block transition-transform duration-150" style={{ transform: openChapters[ch._id] ? "rotate(90deg)" : "none" }}>▸</span>
                     <span className="text-[10px] font-black text-violet-400 uppercase tracking-widest shrink-0">C{ci + 1}</span>
                     <span className="text-xs text-stone-500 font-semibold truncate">{ch.title || <em className="text-stone-300 font-normal">Untitled</em>}</span>
                   </div>

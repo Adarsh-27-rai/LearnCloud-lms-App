@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "../components/component1/sidebar";
 import Main from "../components/component1/main";
 import AllCourses from "../components/component1/allCourses"; 
+import Query from "../components/component1/query";
 import API from "../api/axios";
 // import AuthContext from "../context/authContext";
 
@@ -30,7 +31,7 @@ const StudentDashboard = () => {
             <Route path="/all-courses" element={<AllCourses />} />
             <Route path="/my-courses" element={<div className="p-8"><h1>Enrolled Courses (Coming Soon)</h1></div>} />
             {/* <Route path="/timetable" element={<div className="p-8"><h1>TimeTable (Coming Soon)</h1></div>} /> */}
-            <Route path="/queries" element={<div className="p-8"><h1>Queries (Coming Soon)</h1></div>} />
+            <Route path="/queries" element={<Query />} />
           </Routes>
         </div>
       </div>

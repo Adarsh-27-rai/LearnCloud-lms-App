@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import API from "../../../api/axios";
 import { FiMenu, FiPlay, FiDownload, FiCheckCircle } from "react-icons/fi";
+import { AssignmentBlockPreview } from "./AssignmentBlock";
 import toast from "react-hot-toast";
 
 function BlockText({ block }) {
@@ -106,6 +107,7 @@ export function renderBlock(block, idx) {
   if (mode === "code") return <BlockCode key={key} block={block} />;
   if (mode === "images") return <BlockImage key={key} block={block} />;
   if (mode === "video") return <VideoBlock key={key} block={block} />;
+  if (mode === "assignment") return <AssignmentBlockPreview key={key} block={block} />;
 
   return null;
 }
@@ -113,7 +115,7 @@ export function renderBlock(block, idx) {
 // ── LessonContent ────────────────────────────────────────────────────────────
 
 const LessonContent = ({ lesson, course, fetchCompletedLessons, setCompletedLessons, allLessons = [], completedLessons = [], onNext, isSidebarOpen, onOpenSidebar }) => {
-  const isDone = completedLessons.map(String).includes(String(lesson?._id)); // ✅
+  const isDone = completedLessons.map(String).includes(String(lesson?._id));
   const statusLabel = isDone ? "Completed" : "In Progress";
   const sortedContent = [...(lesson?.content ?? [])].sort((a, b) => a.order - b.order);
   const lessonIdx = allLessons.findIndex((l) => l._id === lesson?._id);
@@ -152,7 +154,7 @@ const LessonContent = ({ lesson, course, fetchCompletedLessons, setCompletedLess
           progress: progress
         });
       }
-      // await API.post(`/course/complete-lesson`, { courseId: course._id, lessonId: lesson._id, progress: progress });
+
       await fetchCompletedLessons();
       toast.success(res.data.message);
       console.log(progress);

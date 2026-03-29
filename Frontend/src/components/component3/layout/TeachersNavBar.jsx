@@ -1,6 +1,24 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
+import API from "../../../api/axios"
 
-const TeachersNavBar = () => {
+const TeachersNavBar = ({userName, userEmail}) => {
+  // const [userName, setUserName] = useState(null);
+  // const [userEmail, setUserEmail] = useState(null);
+
+  // useEffect(() => {
+  //   async function fetchUser() {
+  //     try {
+  //       const res = await API.get("/auth/me"); // ✅ await added
+  //       console.log(res.data.name);
+  //       setUserName(res.data.name); // store full user
+  //       setUserEmail(res.data.email); // store full user
+  //     } catch (err) {
+  //       console.error("Error fetching user:", err);
+  //     }
+  //   }
+
+  //   fetchUser();
+  // }, []); // ✅ run only once
   return (
     <>
       <div className="sticky top-0 z-20 flex justify-between items-center px-8 h-16 bg-white border-b border-sky-100/80 shadow-sm">
@@ -12,8 +30,8 @@ const TeachersNavBar = () => {
             MS
           </div>
           <div className="hidden sm:block">
-            <p className="text-sm font-bold text-slate-700 leading-tight">Mr. Smith</p>
-            <p className="text-xs text-gray-400">Mathematics Dept.</p>
+            <p className="text-sm font-bold text-slate-700 leading-tight">Mr. {userName}</p>
+            <p className="text-xs text-gray-400">{userEmail}</p>
           </div>
         </div>
       </div>

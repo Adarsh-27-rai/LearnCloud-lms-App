@@ -1,249 +1,128 @@
 const express = require("express");
 const Course = require("../Models/Course.js");
 const User = require("../Models/User.js");
-const authMiddleware = require("../Middleware/authMiddleware.js")
+const authMiddleware = require("../Middleware/authMiddleware.js");
 
 const router = express.Router();
 
+// ─────────────────────────────────────────────────────────────
+// IMPORTANT: All static string routes MUST come before /:courseId
+// otherwise Express treats "createdCourses", "my-courses" etc.
+// as the :courseId param and never reaches them.
+// ─────────────────────────────────────────────────────────────
+
+// POST /api/course — create course + push to user.createdCourses
 router.post("/", authMiddleware, async (req, res) => {
-  const course = await Course.create({
-    title: req.body.title,
-    description: req.body.description,
-    subjectTag: req.body.subjectTag,
-    backgroundColor: req.body.backgroundColor,
-    instructor: req.user
-  });
-  res.status(201).json(course);
-})
-
-
-router.post("/:courseId/unit", async (req, res) => {
   try {
-    const course = await Course.findById(req.params.courseId);
-    if (!course) return res.status(404).json({ message: "Course not found" });
-
-    course.units.push(req.body);
-    await course.save();
-    res.status(201).json(course);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-
-})
-
-
-router.post("/:courseId/unit/:unitId/chapter", async (req, res) => {
-  try {
-    const course = await Course.findById(req.params.courseId);
-    if (!course) return res.status(404).json({ message: "Course not found" });
-
-    const units = course.units.find(u => u.id == req.params.unitId);
-    if (!units) return res.status(404).json({ message: "Unit not found" });
-
-    units.chapters.push(req.body);
-    await course.save();
-    res.status(201).json(course);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-})
-
-
-router.post("/:courseId/unit/:unitId/chapter/:chapterId/lesson", async (req, res) => {
-  try {
-    const course = await Course.findById(req.params.courseId);
-    if (!course) return res.status(404).json({ message: "Course not found" });
-
-    const units = course.units.find(u => u.id == req.params.unitId);
-    if (!units) return res.status(404).json({ message: "Unit not found" });
-
-    const chapter = units.chapters.find(c => c.id === req.params.chapterId);
-    if (!chapter) return res.status(404).json({ message: "Chapter not found" });
-
-    chapter.lessons.push(req.body);
-    await course.save()
-    res.status(201).json(course);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-})
-
-
-router.post("/:courseId/unit/:unitId/chapter/:chapterId/lesson/:lessonId/content", async (req, res) => {
-  try {
-    const course = await Course.findById(req.params.courseId);
-    if (!course) return res.status(404).json({ message: "Course not found" });
-
-    if (course.instructor.toString() !== req.user.toString()) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
-
-    const units = course.units.find(u => u.id == req.params.unitId);
-    if (!units) return res.status(404).json({ message: "Unit not found" });
-
-    const chapter = units.chapters.find(c => c.id === req.params.chapterId);
-    if (!chapter) return res.status(404).json({ message: "Chapter not found" });
-
-    const lesson = chapter.lessons.find(c => c.id === req.params.lessonId);
-    if (!lesson) return res.status(404).json({ message: "Lesson not found" });
-
-    lesson.content.push(req.body);
-    await course.save()
-    res.status(201).json(course);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-})
-
-
-router.get("/createdCourses", authMiddleware, async (req, res) => {
-  const courses = await Course.find({ instructor: req.user });
-  res.status(201).json(courses);
-})
-
-
-router.get("/", authMiddleware, async (req, res) => {
-  const courses = await Course.find({});
-  res.status(201).json(courses);
-})
-
-
-router.post("/enroll", authMiddleware, async (req, res) => {
-  try {
-    const { courseId } = req.body;
-    const userId = req.user;
-
-    if (!courseId) {
-      return res.status(400).json({ message: "Course ID is required" });
-    }
-
-    const course = await Course.findById(courseId);
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        $addToSet: { enrolledCourses: courseId },
-        $push: {
-          courseProgress: {
-            courseId,
-            progress: 0,
-            completedLessons: []
-          }
-        }
-      },
-      { new: true }
-    );
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Enrolled successfully",
-      enrolledCourses: updatedUser.enrolledCourses
+    const course = await Course.create({
+      title: req.body.title,
+      description: req.body.description,
+      subjectTag: req.body.subjectTag,
+      backgroundColor: req.body.backgroundColor,
+      instructor: req.user,
     });
 
-  } catch (error) {
-    console.error("Enrollment error:", error);
-    res.status(500).json({ message: "Server error during enrollment" });
+    await User.findByIdAndUpdate(req.user, {
+      $addToSet: { createdCourses: course._id },
+    });
+
+    res.status(201).json(course);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 });
 
+// GET /api/course — all courses
+router.get("/", authMiddleware, async (req, res) => {
+  try {
+    const courses = await Course.find({});
+    res.status(200).json(courses);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
+// GET /api/course/createdCourses — courses made by this teacher
+router.get("/createdCourses", authMiddleware, async (req, res) => {
+  try {
+    const courses = await Course.find({ instructor: req.user });
+    res.status(200).json(courses);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// GET /api/course/my-courses — enrolled courses for student
 router.get("/my-courses", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user)
-      .populate("enrolledCourses").lean();
-    // .lean() makes the query faster by returning a plain JS object
+    const user = await User.findById(req.user).populate("enrolledCourses").lean();
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const progressArray = user.courseProgress?.map(c => ({
+    const progressArray = (user.courseProgress || []).map((c) => ({
       courseId: c.courseId.toString(),
-      progress: c.progress
-    })) || [];
-    
-    // Return the populated array directly
+      progress: c.progress,
+    }));
+
     res.status(200).json({
       success: true,
       count: user.enrolledCourses.length,
       courses: user.enrolledCourses,
-      progress: progressArray
+      progress: progressArray,
     });
-
   } catch (error) {
-    console.error("Error fetching enrolled courses:", error);
     res.status(500).json({ message: "Server error fetching your courses" });
   }
 });
 
-
-// Put request to update
-router.put("/:courseId", authMiddleware, async (req, res) => {
+// POST /api/course/enroll
+router.post("/enroll", authMiddleware, async (req, res) => {
   try {
-    const course = await Course.findById(req.params.courseId);
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
-    }
+    const { courseId } = req.body;
+    if (!courseId) return res.status(400).json({ message: "Course ID is required" });
 
-    if (course.instructor.toString() !== req.user.toString()) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
+    const course = await Course.findById(courseId);
+    if (!course) return res.status(404).json({ message: "Course not found" });
 
-    const { title, description, subjectTag, backgroundColor, units } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user,
+      {
+        $addToSet: { enrolledCourses: courseId },
+        $push: { courseProgress: { courseId, progress: 0, completedLessons: [] } },
+      },
+      { new: true }
+    );
+    if (!updatedUser) return res.status(404).json({ message: "User not found" });
 
-    if (title !== undefined) {
-      course.title = title;
-    }
-    if (description !== undefined) {
-      course.description = description;
-    }
-    if (subjectTag !== undefined) {
-      course.subjectTag = subjectTag;
-    }
-    if (backgroundColor !== undefined) {
-      course.backgroundColor = backgroundColor;
-    }
-    if (units !== undefined) {
-      course.units = units;
-    }
-
-    await course.save();
-    res.status(200).json(course);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(200).json({
+      success: true,
+      message: "Enrolled successfully",
+      enrolledCourses: updatedUser.enrolledCourses,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error during enrollment" });
   }
 });
 
-
+// POST /api/course/complete-lesson
 router.post("/complete-lesson", authMiddleware, async (req, res) => {
   try {
     const { courseId, lessonId, progress } = req.body;
-    const userId = req.user;
     const updated = await User.findOneAndUpdate(
-      { _id: userId, "courseProgress.courseId": courseId },
+      { _id: req.user, "courseProgress.courseId": courseId },
       {
         $addToSet: { "courseProgress.$.completedLessons": lessonId },
-        $set: { "courseProgress.$.progress": progress }
+        $set: { "courseProgress.$.progress": progress },
       },
       { new: true }
     );
     if (!updated) return res.status(404).json({ message: "Progress not found" });
     res.status(200).json({ success: true, message: "Lesson marked complete" });
-
   } catch (err) {
-    console.log("error:", err.message);
     res.status(400).json({ error: err.message });
   }
 });
 
-
+// POST /api/course/remove-lesson
 router.post("/remove-lesson", authMiddleware, async (req, res) => {
   try {
     const { courseId, lessonId, progress } = req.body;
@@ -251,54 +130,94 @@ router.post("/remove-lesson", authMiddleware, async (req, res) => {
       { _id: req.user, "courseProgress.courseId": courseId },
       {
         $pull: { "courseProgress.$.completedLessons": lessonId },
-        $set: { "courseProgress.$.progress": progress }
+        $set: { "courseProgress.$.progress": progress },
       },
       { new: true }
     );
-
-    if (!updated) {
-      return res.status(404).json({ message: "Progress not found" });
-    }
+    if (!updated) return res.status(404).json({ message: "Progress not found" });
     res.status(200).json({ success: true, message: "Lesson marked in-progress" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
 
-
+// GET /api/course/progress/:courseId — completed lesson IDs
 router.get("/progress/:courseId", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user);
-    const progress = user.courseProgress.find(c =>
-      c.courseId.toString() === req.params.courseId
+    const progress = user.courseProgress.find(
+      (c) => c.courseId.toString() === req.params.courseId
     );
+    res.status(200).json((progress?.completedLessons || []).map(String));
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
-    const lessonIds = (progress?.completedLessons || []).map(String);
-    res.status(200).json(lessonIds);
+// GET /api/course/my-progress/:courseId — progress percentage
+router.get("/my-progress/:courseId", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const progress = user.courseProgress.find(
+      (c) => c.courseId.toString() === req.params.courseId
+    );
+    res.status(200).json({ progress: progress ? progress.progress : 0 });
+  } catch (error) {
+    res.status(500).json({ message: "Server error fetching progress" });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────
+// Dynamic :courseId routes LAST — so static paths above match first
+// ─────────────────────────────────────────────────────────────
+
+// GET /api/course/:courseId — single course (used by CoursePage)
+router.get("/:courseId", authMiddleware, async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.courseId);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+    res.status(200).json(course);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
 
 
-router.get("/my-progress/:courseId", authMiddleware, async (req, res) => {
+
+// PUT /api/course/:courseId — save from CourseEditor
+router.put("/:courseId", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const course = await Course.findById(req.params.courseId);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+
+    if (course.instructor.toString() !== req.user.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
     }
-    const progress = user.courseProgress.find(c =>
-      c.courseId.toString() === req.params.courseId
+
+    const { title, description, subjectTag, backgroundColor, units } = req.body;
+
+    // findByIdAndUpdate with runValidators:false avoids Mongoose re-validating
+    // every deeply nested subdocument on save — the editor sanitises the data
+    const updated = await Course.findByIdAndUpdate(
+      req.params.courseId,
+      {
+        $set: {
+          ...(title !== undefined       && { title }),
+          ...(description !== undefined && { description }),
+          ...(subjectTag !== undefined  && { subjectTag }),
+          ...(backgroundColor !== undefined && { backgroundColor }),
+          ...(units !== undefined       && { units }),
+        },
+      },
+      { new: true, runValidators: false }
     );
 
-    const myProgress = progress ? progress.progress : 0;
-    res.status(200).json({ progress: myProgress });
-  } catch (error) {
-    console.error("Error fetching progress:", error);
-    res.status(500).json({ message: "Server error fetching progress" });
+    res.status(200).json(updated);
+  } catch (err) {
+    console.error("PUT /course error:", err.message);
+    res.status(400).json({ error: err.message });
   }
 });
 
-
 module.exports = router;
-
