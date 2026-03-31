@@ -1,4 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useContext, useEffect } from "react";
+import AuthContext from "../../../context/authContext";
+import API from "../../../api/axios";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const COURSES = [
@@ -90,9 +92,23 @@ function StudentCard({ student, course }) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function MyStudents() {
-  const [search, setSearch]               = useState("");
+  const { allCourses } = useContext(AuthContext);
+  const [search, setSearch] = useState("");
   const [selectedCourse, setSelectedCourse] = useState("all");
-  const [sortBy, setSortBy]               = useState("name");
+  const [sortBy, setSortBy] = useState("name");
+
+  async function fetchStudents() {
+    try {
+    const res = await API.get("/course/students");
+    console.log(res.data);
+  } catch (error) {
+    console.error(error.response?.data || error.message);
+  }
+  }
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
 
   const courseMap = useMemo(
     () => Object.fromEntries(COURSES.map((c) => [c.id, c])),
