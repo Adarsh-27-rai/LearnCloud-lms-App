@@ -15,6 +15,8 @@ mongoose.connect(process.env.MONGODB_URL)
 app.use("/api/auth", require("./Routes/auth"))
 app.use("/api/course", require("./Routes/myCourse"))
 app.use("/api/assignments", require("./Routes/myAssignments"));
+app.use("/api/students", require("./Routes/students"));
+
 
 app.get("/" ,(req,res) => {
     res.send("Hello World!!");
