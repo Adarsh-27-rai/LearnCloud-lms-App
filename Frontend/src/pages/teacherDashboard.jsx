@@ -7,6 +7,7 @@ import AddCourseModal from "../components/component3/courses/AddCourseModal";
 import API from "../api/axios";
 import AuthContext from "../context/authContext";
 import TeachersNavBar from "../components/component3/layout/TeachersNavBar";
+import MyStudents from "../components/component3/layout/MyStudents";
 import Assignments from "../components/component3/Assignment/Assignment";
 // inside your teacher dashboard <Routes>:
 {/* <Route path="/teacherDashboard/assignments" element={<Assignments />} /> */}
@@ -51,18 +52,6 @@ export default function TeacherDashboard({userName, userEmail}) {
                 </>
               } />
                 
-              {/* Generic fallback for routes like 'timetable' or 'students' */}
-              {/* <Route path="/timetable" element={
-                <div className="bg-white rounded-2xl p-10 text-gray-400">
-                  Coming Soon...
-                </div>
-              } /> */}
-
-              {/* <Route path="/assignments" element={
-                <div className="bg-white rounded-2xl p-10 text-gray-400">
-                  Coming Soon...
-                </div>
-              } /> */}
               <Route path="/assignments" element={
                 <>
                   <TeachersNavBar userName={userName} userEmail={userEmail}/>
@@ -71,9 +60,10 @@ export default function TeacherDashboard({userName, userEmail}) {
               }/>
 
               <Route path="/my-students" element={
-                <div className="bg-white rounded-2xl p-10 text-gray-400">
-                  Coming Soon...
-                </div>
+                 <>
+                  <TeachersNavBar userName={userName} userEmail={userEmail}/>
+                  <MyStudents />
+                </>   
               } />
 
             </Routes>

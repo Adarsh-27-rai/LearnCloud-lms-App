@@ -100,7 +100,6 @@ router.post("/enroll", authMiddleware, async (req, res) => {
           studentId: req.user,
           name: updatedUser.name,
           courseId,
-          progress: 0,
         },
       },
     });
@@ -180,10 +179,6 @@ router.get("/my-progress/:courseId", authMiddleware, async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────────────────────────
-// Dynamic :courseId routes LAST — so static paths above match first
-// ─────────────────────────────────────────────────────────────
-
 // GET /api/course/:courseId — single course (used by CoursePage)
 router.get("/:courseId", authMiddleware, async (req, res) => {
   try {
@@ -194,8 +189,6 @@ router.get("/:courseId", authMiddleware, async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-
-
 
 // PUT /api/course/:courseId — save from CourseEditor
 router.put("/:courseId", authMiddleware, async (req, res) => {
@@ -230,6 +223,12 @@ router.put("/:courseId", authMiddleware, async (req, res) => {
     console.error("PUT /course error:", err.message);
     res.status(400).json({ error: err.message });
   }
+});
+
+router.get("/students", authMiddleware, async (req, res) => {
+  const user = await User.findById(req.user);
+  if(!user) return res.status(404).json({message: "User not found"});
+  res.status(200).json(user.students);
 });
 
 module.exports = router;
