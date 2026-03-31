@@ -264,7 +264,7 @@ export default function QueryChat() {
                 {/* Input */}
                 <div className="shrink-0 bg-white border-t border-slate-100 px-8 py-4">
                     <div className="max-w-3xl mx-auto flex gap-3 items-end">
-                        <div className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 focus-within:border-blue-400 focus-within:bg-white transition-all shadow-sm">
+                        <div className="w-full h-12 flex items-center bg-slate-50 border border-slate-200 rounded-3xl px-4 py-2 focus-within:border-blue-400 focus-within:bg-white transition-all shadow-sm">
                             <textarea
                                 ref={textareaRef}
                                 rows={1}
@@ -273,16 +273,16 @@ export default function QueryChat() {
                                 onKeyDown={handleKey}
                                 placeholder="Ask a question about any subject…"
                                 disabled={loading}
-                                className="w-full resize-none bg-transparent text-sm text-slate-700 placeholder-slate-400 outline-none leading-relaxed max-h-[140px]"
+                                className="w-full resize-none bg-transparent text-sm text-blue-900 placeholder-slate-500 outline-none leading-relaxed max-h-[140px]"
                             />
                         </div>
                         <button
                             onClick={() => sendMessage()}
                             disabled={!input.trim() || loading}
-                            className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 transition-all shadow-md
+                            className={`w-14 h-12 rounded-3xl flex items-center justify-center shrink-0 transition-all shadow-md
                 ${input.trim() && !loading
                                     ? "bg-blue-600 hover:bg-blue-700 text-white hover:scale-105 active:scale-95 shadow-blue-200"
-                                    : "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
+                                    : "bg-slate-200 text-slate-600 cursor-not-allowed shadow-none"
                                 }`}
                         >
                             <Send className="w-4 h-4" />
