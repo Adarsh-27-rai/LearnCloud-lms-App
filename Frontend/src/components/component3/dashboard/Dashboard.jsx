@@ -37,12 +37,10 @@ function DashboardPage({ onOpen, userName }) {
         </h2>
         <p className="text-sm text-gray-400 mt-1.5">Here's your teaching overview for today.</p>
       </motion.div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <StatCard label="Total Students" value={totalStudents} />
         <StatCard label="Active Courses" value={allCourses?.length || 0} />
-        <StatCard label="Assignments" value={totalAssignments} />
-        <StatCard label="Avg Score" value="78%" />
-        
+        <StatCard label="Assignments" value={totalAssignments} />  
       </div>
 
       <div className="bg-white rounded-2xl p-6 shadow">
