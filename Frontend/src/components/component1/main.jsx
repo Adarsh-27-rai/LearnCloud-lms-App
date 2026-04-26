@@ -43,7 +43,7 @@ const main = () => {
             }
         });
 
-        setPerformance((totalPerformance / progressData.length));
+        setPerformance(Math.round(totalPerformance / progressData.length));
         console.log(performance);
         setCompletedCount(completed);
         setInProgressCount(inProgress);
