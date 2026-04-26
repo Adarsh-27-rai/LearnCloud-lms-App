@@ -12,7 +12,6 @@ const Sidebar = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Clear auth tokens here if needed
         localStorage.removeItem("token");
         navigate("/login");
     };
@@ -21,7 +20,7 @@ const Sidebar = () => {
         <div className="w-[15vw] h-screen bg-blue-950 shadow-xl p-6 hidden md:flex flex-col relative shrink-0">
             {/* Logo */}
             <h2 className="text-2xl font-bold mb-8 text-slate-200 select-none">
-                Learn<span className="text-2xl font-bold text-[rgb(124,209,255)]">Sphere</span>
+                Learn<span className="text-2xl font-bold text-[rgb(124,209,255)]">Cloud</span>
             </h2>
 
             {/* Nav */}
@@ -42,7 +41,6 @@ const Sidebar = () => {
                     >
                         {({ isActive }) => (
                             <>
-                                {/* Animated left accent bar */}
                                 <AnimatePresence>
                                     {isActive && (
                                         <motion.span
@@ -63,7 +61,6 @@ const Sidebar = () => {
                 ))}
             </nav>
 
-            {/* Logout */}
             <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 px-4 py-2 mt-10 rounded-lg w-45 bg-red-500/30 text-red-500 text-lg cursor-pointer transition-all hover:border hover:border-red-500"

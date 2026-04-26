@@ -29,7 +29,6 @@ const main = () => {
         setCourse(cor.data.courses);
         setProgress(cor.data.progress);
 
-        //set collective progress 
         const progressData = cor.data.progress; //use fresh data
         let completed = 0;
         let inProgress = 0;
@@ -57,7 +56,6 @@ const main = () => {
     return (
         <div>
             <main className="h-screen w-[85vw] flex-1 p-6">
-                {/* Top Bar */}
                 <header className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3 w-full max-w-md">
                         <Search className="text-gray-500" />
@@ -66,7 +64,6 @@ const main = () => {
                     <Bell className="cursor-pointer" />
                 </header>
 
-                {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                     {[{
                         title: "Enrolled",
@@ -139,7 +136,7 @@ const main = () => {
                 </section>
 
                 <footer className="mt-5 h-6 border-t-2 border-gray-400 py-2 text-center text-2xs text-gray-500">
-                    © {new Date().getFullYear()} LearnSphere · Your future starts here.
+                    © {new Date().getFullYear()} LearnCloud · Your future starts here.
                 </footer>
             </main>
         </div>
