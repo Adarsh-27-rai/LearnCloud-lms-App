@@ -17,11 +17,11 @@ function Login() {
       const res = await API.post("/auth/login", { email, password });
       const { token, role } = res.data;
       if(token) toast.success("Login Successfull");
+      
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
       setRole(role);
       fetchRole(); 
-
       if (role === "Student") {
         navigate("/studentDashboard");
       } else if (role === "Teacher") {

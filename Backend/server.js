@@ -5,6 +5,12 @@ const app = express();
 require("dotenv").config();
 
 app.use(cors())
+
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "frame-ancestors 'self' https://your-frontend-domain.com");
+  next();
+});
+
 app.use(express.json())
 const port = process.env.PORT;
 

@@ -13,7 +13,6 @@ const ContentSchema = new mongoose.Schema({
   videoURL: String,
   imageURL: String,
   caption: String,
-  // assignment block fields
   assignmentId: String,
   assignmentTitle: String,
 });
