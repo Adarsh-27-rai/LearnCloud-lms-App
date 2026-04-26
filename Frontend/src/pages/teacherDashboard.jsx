@@ -39,7 +39,7 @@ export default function TeacherDashboard({userName, userEmail}) {
               {/* index route displays for /teacherDashboard */}
               <Route index element={
                 <>
-                  <TeachersNavBar userName={userName} userEmail={userEmail}/>
+                  <TeachersNavBar title="Dashboard" userName={userName} userEmail={userEmail}/>
                   <DashboardPage onOpen={() => setModal(true)} userName={userName}/> 
                 </>
               } />
@@ -47,21 +47,21 @@ export default function TeacherDashboard({userName, userEmail}) {
               {/* path matches the 'to' prop in your sidebar NavLinks */}
               <Route path="/my-courses" element={
                 <>
-                  <TeachersNavBar userName={userName} userEmail={userEmail}/>
+                  <TeachersNavBar title="My Courses" userName={userName} userEmail={userEmail}/>
                   <MyCoursesPage onOpen={() => setModal(true)} /> 
                 </>
               } />
                 
               <Route path="/assignments" element={
                 <>
-                  <TeachersNavBar userName={userName} userEmail={userEmail}/>
+                  <TeachersNavBar title="Assignments" userName={userName} userEmail={userEmail}/>
                   <Assignments />
                 </>   
               }/>
 
               <Route path="/my-students" element={
                  <>
-                  <TeachersNavBar userName={userName} userEmail={userEmail}/>
+                  <TeachersNavBar title="Enrolled Students" userName={userName} userEmail={userEmail}/>
                   <MyStudents />
                 </>   
               } />
