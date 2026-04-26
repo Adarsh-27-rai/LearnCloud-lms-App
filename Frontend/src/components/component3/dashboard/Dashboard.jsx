@@ -2,10 +2,29 @@ import StatCard from "./Statcard";
 import CourseCard from "../courses/CourseCard";
 import { motion } from "framer-motion";
 import AuthContext from "../../../context/authContext";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
+import API from "../../../api/axios";
 
 function DashboardPage({ onOpen, userName }) {
   const { allCourses } = useContext(AuthContext);
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [totalAssignments, setTotalAssignments] = useState(0);
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const [studentsRes, assignmentsRes] = await Promise.all([
+          API.get("/students"),
+          API.get("/assignments/my")
+        ]);
+        setTotalStudents(studentsRes.data?.length || 0);
+        setTotalAssignments(assignmentsRes.data?.assignments?.length || 0);
+      } catch (err) {
+        console.error("Failed to fetch dashboard stats", err);
+      }
+    }
+    fetchStats();
+  }, []);
 
   return (
     <div className="p-6">
@@ -19,9 +38,9 @@ function DashboardPage({ onOpen, userName }) {
         <p className="text-sm text-gray-400 mt-1.5">Here's your teaching overview for today.</p>
       </motion.div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Total Students" value="84" />
-        <StatCard label="Active Courses" value="3" />
-        <StatCard label="Assignments" value="12" />
+        <StatCard label="Total Students" value={totalStudents} />
+        <StatCard label="Active Courses" value={allCourses?.length || 0} />
+        <StatCard label="Assignments" value={totalAssignments} />
         <StatCard label="Avg Score" value="78%" />
         
       </div>
